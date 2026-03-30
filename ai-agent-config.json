@@ -1,7 +1,8 @@
 {
   "__comment__": "Give this file to an AI agent (like Antigravity or Claude) to automatically set up your environment.",
   "project": {
-    "name": "Claude Code + OpenRouter",
+    "name": "CodeRouter",
+    "year": "2026",
     "description": "Unlock 200+ models in Claude Code without an Anthropic account."
   },
   "user_preferences": {
