@@ -1,0 +1,21 @@
+{
+  "name": "claude-code-openrouter",
+  "version": "1.0.0",
+  "description": "Run Claude Code with any AI model via OpenRouter — zero Anthropic account needed.",
+  "scripts": {
+    "start": "node -e \"require('child_process').execSync('.\\\\run-claude.bat', {stdio: 'inherit'})\"",
+    "claude": "npx claude"
+  },
+  "keywords": [
+    "claude-code",
+    "openrouter",
+    "ai",
+    "coding-agent",
+    "llm"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/claude-code": "^2.1.83"
+  }
+}

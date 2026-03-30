@@ -1,0 +1,29 @@
+{
+  "__comment__": "Give this file to an AI agent (like Antigravity or Claude) to automatically set up your environment.",
+  "project": {
+    "name": "Claude Code + OpenRouter",
+    "description": "Unlock 200+ models in Claude Code without an Anthropic account."
+  },
+  "user_preferences": {
+    "api_key": "sk-or-v1-...",
+    "model": "step-3.5-flash:free  ",
+    "is_default": true
+  },
+  "setup_instructions": {
+    "step_1": "Update the 'user_preferences' section with your OpenRouter API key and preferred model.",
+    "step_2": "Provide this file to your AI Assistant.",
+    "step_3": "The Assistant will run 'npm install' and configure your .env file automatically."
+  },
+  "supported_models_quick_list": {
+    "free_fast": "google/gemini-2.0-flash-001",
+    "best_coding": "anthropic/claude-3-7-sonnet",
+    "cheap_powerful": "deepseek/deepseek-chat-v3",
+    "meta_llama": "meta-llama/llama-3.1-405b-instruct"
+  },
+  "agent_actions": {
+    "install_dependencies": "npm install",
+    "configure_env": "Create .env from .env.example, then replace placeholders with the values from 'user_preferences' in this JSON file.",
+    "launch_on_windows": ".\\run-claude.ps1",
+    "launch_on_unix": "./run-claude.sh"
+  }
+}
