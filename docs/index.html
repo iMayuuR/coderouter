@@ -242,12 +242,13 @@
 <pre>{
   <span class="hl-key">"user_preferences"</span>: {
     <span class="hl-key">"api_key"</span>: <span class="hl-str">"sk-or-v1-..."</span>,
-    <span class="hl-key">"model"</span>: <span class="hl-str">"google/gemini-2.5-pro"</span>,
+    <span class="hl-key">"model"</span>: <span class="hl-str">"stepfun/step-3.5-flash:free"</span>,
     <span class="hl-key">"is_default"</span>: <span class="hl-bool">true</span>
   },
   <span class="hl-key">"agent_actions"</span>: {
-    <span class="hl-key">"install"</span>: <span class="hl-str">"npm install"</span>,
-    <span class="hl-key">"launch"</span>: <span class="hl-str">".\\run-claude.ps1"</span>
+    <span class="hl-key">"install_dependencies"</span>: <span class="hl-str">"npm install"</span>,
+    <span class="hl-key">"launch_on_windows"</span>: <span class="hl-str">".\\run-claude.ps1"</span>,
+    <span class="hl-key">"launch_on_unix"</span>: <span class="hl-str">"./run-claude.sh"</span>
   }
 }</pre>
           </div>
@@ -314,6 +315,9 @@
       </div>
       <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted); font-size: .88rem;" class="reveal">
         📋 Full model list → <a href="https://openrouter.ai/models" target="_blank">openrouter.ai/models</a>
+      </p>
+      <p style="text-align: center; margin-top: 0.5rem; color: #ef4444; font-size: .85rem; max-width: 600px; margin-left: auto; margin-right: auto;" class="reveal">
+        ⚠️ <strong>Disclaimer:</strong> Please note that free models may use your inputs and code data for training purposes. Avoid sending sensitive or proprietary information when using free tiers.
       </p>
     </div>
   </section>
@@ -454,7 +458,7 @@
 5. **Update ai-agent-config.json:**
    - Edit the file with my provided:
      * api_key: [my OpenRouter API key]
-     * model: [my preferred model, e.g., google/gemini-2.5-pro]
+     * model: [my preferred model, e.g., stepfun/step-3.5-flash:free]
    - Leave other fields as-is
 
 6. **Test:**

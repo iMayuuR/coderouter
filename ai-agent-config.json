@@ -7,7 +7,7 @@
   },
   "user_preferences": {
     "api_key": "sk-or-v1-...",
-    "model": "step-3.5-flash:free  ",
+    "model": "stepfun/step-3.5-flash:free",
     "is_default": true
   },
   "setup_instructions": {
@@ -16,10 +16,18 @@
     "step_3": "The Assistant will run 'npm install' and configure your .env file automatically."
   },
   "supported_models_quick_list": {
-    "free_fast": "google/gemini-2.0-flash-001",
+    "free_fast": "stepfun/step-3.5-flash:free",
     "best_coding": "anthropic/claude-3-7-sonnet",
     "cheap_powerful": "deepseek/deepseek-chat-v3",
-    "meta_llama": "meta-llama/llama-3.1-405b-instruct"
+    "meta_llama": "meta-llama/llama-3.1-405b-instruct",
+    "nemotron_120b": "nvidia/nemotron-3-super-120b-a12b:free",
+    "qwen_3_6_plus": "qwen/qwen3.6-plus-preview:free",
+    "sora_2_pro": "openai/sora-2-pro",
+    "veo_3_1": "google/veo-3.1",
+    "minimax_m2_5": "minimax/minimax-m2.5:free",
+    "nemotron_30b": "nvidia/nemotron-3-nano-30b-a3b:free",
+    "nemotron_12b_vl": "nvidia/nemotron-nano-12b-v2-vl:free",
+    "glm_4_5_air": "z-ai/glm-4.5-air:free"
   },
   "agent_actions": {
     "install_dependencies": "npm install",

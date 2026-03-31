@@ -64,6 +64,8 @@ CLAUDE_MODEL=google/gemini-3.1-pro
 | **Fast & Free** | Step 3.5 Flash | `stepfun/step-3.5-flash:free` |
 | **Large & Free** | Nemotron 120B | `nvidia/nemotron-3-super-120b-a12b:free` |
 
+> ⚠️ **Disclaimer:** Please be aware that free models may use your inputs and interaction data for their own training purposes. Exercise caution and avoid sending sensitive or proprietary information when using free tiers.
+
 ---
 
 ## 🔧 How It Works
