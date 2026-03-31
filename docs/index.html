@@ -192,31 +192,43 @@
       <div class="steps">
         <div class="step-card reveal">
           <div class="step-number">1</div>
-          <h3>Configure the Agent</h3>
-          <p>Download the <code>ai-agent-config.json</code> file and add your OpenRouter API key and favorite model to it.</p>
+          <h3>📋 Copy Setup Prompt</h3>
+          <p>Click the "Copy AI Agent Setup Prompt" button below to get complete installation instructions.</p>
         </div>
         <div class="step-card reveal">
           <div class="step-number">2</div>
-          <h3>Hand it over</h3>
-          <p>Give the <code>ai-agent-config.json</code> file to Cursor, Claude Desktop, or your IDE's AI Agent and say: "Set this up."</p>
+          <h3>🤖 Send to AI Assistant</h3>
+          <p>Paste the prompt into your AI assistant (Cursor, Claude Desktop, Windsurf, etc.). It will read your <code>ai-agent-config.json</code>, then automatically clone, install, configure dependencies, and test CodeRouter.</p>
         </div>
         <div class="step-card reveal">
           <div class="step-number">3</div>
-          <h3>Run &amp; Code!</h3>
-          <p>The agent will run the setup. Once done, execute <code>.\run-claude.ps1</code> (Windows) and start coding.</p>
+          <h3>🚀 Launch CodeRouter</h3>
+          <p>After setup completes, run <code>.\run-claude.ps1</code> (Windows) or <code>./run-claude.sh</code> (Unix) and start coding with 200+ AI models.</p>
         </div>
       </div>
+
+        <!-- AI Agent Prompt Button -->
+        <div class="ai-prompt-section reveal" style="margin-top: 2.5rem; text-align: center; padding: 2rem; background: rgba(99, 102, 241, 0.05); border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.15);">
+          <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">🤖 Or Let Your AI Agent Do Everything</h3>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Click the button below to copy a complete setup prompt. Paste it into your AI assistant (Cursor, Claude Desktop, Windsurf, etc.) and it will automatically clone the repository, install dependencies, configure your API key, and set up CodeRouter for you.
+          </p>
+          <button class="btn btn-primary" id="copyAgentPrompt" onclick="copyAgentPrompt()">
+            📋 Copy Complete Setup Prompt
+          </button>
+          <p id="copySuccess" style="color: #22c55e; margin-top: 0.75rem; font-size: 0.9rem; display: none;">✓ Prompt copied to clipboard!</p>
+        </div>
 
       <!-- Config Code Block -->
       <div class="code-section reveal" style="margin-top: 3.5rem;">
         <div class="code-desc">
-          <h3>AI-Agent Ready Config</h3>
-          <p>Just hand the <a href="../ai-agent-config.json" download style="color: var(--accent-3); text-decoration: underline;">ai-agent-config.json</a> file to your favourite AI coding assistant — it contains all the instructions needed to auto-install everything.</p>
+          <h3>📁 AI Agent Configuration</h3>
+          <p>This file tells the AI agent which model to use. <strong>You need to edit it manually</strong> with your OpenRouter API key and preferred model before giving it to your AI assistant.</p>
           <ul>
-            <li>Set your OpenRouter API key inside the file</li>
-            <li>Choose your favorite model from the supported list</li>
-            <li>The agent runs <code>setup-agent.ps1</code> automatically</li>
-            <li>Zero manual configuration required</li>
+            <li>Download this file and add your OpenRouter API key</li>
+            <li>Choose your preferred model from the supported list</li>
+            <li>Then give this <strong>edited file</strong> to your AI assistant along with the copy prompt</li>
+            <li>The AI uses this config to know what to install and launch</li>
           </ul>
         </div>
         <div class="code-block">
@@ -416,6 +428,54 @@
         });
       });
     });
+
+    // Copy AI Agent Setup Prompt
+    function copyAgentPrompt() {
+      const prompt = `Set up CodeRouter on my system. Here's what to do:
+
+1. **Get the Repository:**
+   - Clone: git clone https://github.com/iMayuuR/coderouter.git
+   - cd coderouter
+   - (If already in the repo directory, skip this)
+
+2. **Read Configuration:**
+   - Look for ai-agent-config.json in the repository
+   - Note the API key placeholder and model settings
+   - I will provide my OpenRouter API key and preferred model
+
+3. **Install Dependencies:**
+   - Run: npm install
+
+4. **Configure Environment:**
+   - Create .env from .env.example
+   - Set OPENROUTER_API_KEY with my API key
+   - Set CLAUDE_MODEL with my preferred model
+
+5. **Update ai-agent-config.json:**
+   - Edit the file with my provided:
+     * api_key: [my OpenRouter API key]
+     * model: [my preferred model, e.g., google/gemini-2.5-pro]
+   - Leave other fields as-is
+
+6. **Test:**
+   - Run: .\\run-claude.ps1 (Windows) or ./run-claude.sh (Unix)
+   - Verify Claude Code starts and connects through OpenRouter
+
+7. **Done!** I should now have access to 200+ AI models without an Anthropic account.
+
+Let me know if you need my API key and model preference to proceed.`;
+
+      navigator.clipboard.writeText(prompt).then(() => {
+        const successMsg = document.getElementById('copySuccess');
+        successMsg.style.display = 'block';
+        setTimeout(() => {
+          successMsg.style.display = 'none';
+        }, 3000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert('Failed to copy. Please select and copy the text manually.');
+      });
+    }
   </script>
 
 </body>
