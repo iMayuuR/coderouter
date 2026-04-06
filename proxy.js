@@ -1,8 +1,8 @@
 const http = require('http');
 const https = require('https');
 
-// Load env vars
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const PORT = 3000;
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/messages';
@@ -11,7 +11,21 @@ const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/messages';
 const defaultModel = process.env.CLAUDE_MODEL || 'openrouter/free';
 let fallbackVisionModel = process.env.VISION_MODEL || 'qwen/qwen-2.5-vl-72b-instruct:free';
 let dynamicVisionModel = null;
-const apiKey = process.env.OPENROUTER_API_KEY;
+const fs = require('fs');
+const apiKey = (process.env.OPENROUTER_API_KEY || '').trim().replace(/^["'](.*)["']$/, '$1');
+
+// Final debug check to a file (since console is cleared by Claude CLI)
+fs.writeFileSync(path.join(__dirname, 'proxy-debug.log'), `[${new Date().toISOString()}] Started. Key length: ${apiKey.length}\n`);
+
+if (!apiKey) {
+  console.error("❌ ERROR: OPENROUTER_API_KEY is not set in .env");
+  process.exit(1);
+}
+
+// Ignore Ctrl+C (SIGINT) so the proxy doesn't die when the user interrupts Claude Code
+process.on('SIGINT', () => {
+  // Graceful handling handled by run-claude script's finally block
+});
 
 // Smart Model Picker function
 function updateDynamicModels() {
@@ -31,7 +45,6 @@ function updateDynamicModels() {
         if (freeVision.length > 0) {
           // Select the first available free vision model
           dynamicVisionModel = freeVision[0].id;
-          console.log(`\n🔄 [Smart Picker] Dynamically selected free vision model: ${dynamicVisionModel}`);
         }
       } catch (err) {
         console.error("Error parsing OpenRouter models:", err.message);
@@ -45,11 +58,6 @@ function updateDynamicModels() {
 // Fetch models immediately and then every 2 hours
 updateDynamicModels();
 setInterval(updateDynamicModels, 2 * 60 * 60 * 1000);
-
-if (!apiKey) {
-  console.error("❌ ERROR: OPENROUTER_API_KEY is not set in .env");
-  process.exit(1);
-}
 
 // Check if the payload contains any image content
 function hasImageParam(messages) {
@@ -100,11 +108,23 @@ const server = http.createServer((req, res) => {
         // Override the model intelligently
         if (requiresVision) {
           const selectedVisionModel = dynamicVisionModel || fallbackVisionModel;
-          console.log(`\n👁️  [Smart Router] Image detected! Utilizing Vision Model: ${selectedVisionModel}`);
           payload.model = selectedVisionModel;
         } else {
           payload.model = defaultModel;
         }
+
+        // STRIP CACHE_CONTROL to prevent OpenRouter 400 errors (context management features not available)
+        function stripCacheControl(obj) {
+          if (Array.isArray(obj)) {
+            obj.forEach(stripCacheControl);
+          } else if (obj !== null && typeof obj === 'object') {
+            if ('cache_control' in obj) {
+              delete obj['cache_control'];
+            }
+            Object.values(obj).forEach(stripCacheControl);
+          }
+        }
+        stripCacheControl(payload);
 
         requestBodyStr = JSON.stringify(payload);
       } catch (err) {
@@ -112,26 +132,66 @@ const server = http.createServer((req, res) => {
       }
 
       // Forward request to OpenRouter
+      // Make sure we always prepend '/api' to force OpenRouter's Anthropic compatibility layer
+      let finalPath = req.url || '/v1/messages';
+      if (!finalPath.startsWith('/api')) {
+        finalPath = '/api' + finalPath;
+      }
+      
       const options = {
         hostname: 'openrouter.ai',
         port: 443,
-        path: req.url || '/api/v1/messages', // Claude posts to whatever endpoint
+        path: finalPath,
         method: 'POST',
         headers: {
-          ...req.headers,
-          'host': 'openrouter.ai',
-          'content-length': Buffer.byteLength(requestBodyStr),
-          // Ensure we append the correct auth and headers OpenRouter expects
+          'Content-Type': req.headers['content-type'] || 'application/json',
+          'Content-Length': Buffer.byteLength(requestBodyStr),
           'Authorization': `Bearer ${apiKey}`,
           'HTTP-Referer': 'https://github.com/iMayuuR/coderouter', 
-          'X-Title': 'CodeRouter'
+          'X-Title': 'CodeRouter',
+          'User-Agent': 'CodeRouter Proxy/1.0'
         }
       };
 
+      // Pass along anthropic-version if Claude provided it
+      if (req.headers['anthropic-version']) {
+         options.headers['anthropic-version'] = req.headers['anthropic-version'];
+      }
+
       const proxyReq = https.request(options, (proxyRes) => {
-        // Stream the response back to Claude Code
+        // Drop content-length because we might modify the payload length
+        delete proxyRes.headers['content-length'];
         res.writeHead(proxyRes.statusCode, proxyRes.headers);
-        proxyRes.pipe(res, { end: true });
+
+        const { Transform } = require('stream');
+        const patchStream = new Transform({
+          transform(chunk, encoding, callback) {
+            let chunkStr = chunk.toString('utf8');
+            
+            // Inject fake usage block if OpenRouter neglects to provide it in Anthropic SSE stream
+            if (proxyRes.headers['content-type'] && proxyRes.headers['content-type'].includes('text/event-stream')) {
+              if (chunkStr.includes('"type":"message_start"') && !chunkStr.includes('"usage"')) {
+                chunkStr = chunkStr.replace(/"message"\s*:\s*\{/, '"message":{"usage":{"input_tokens":0,"output_tokens":0},');
+              }
+              if (chunkStr.includes('"type":"message_delta"') && !chunkStr.includes('"usage"')) {
+                chunkStr = chunkStr.replace(/"type"\s*:\s*"message_delta"/, '"type":"message_delta","usage":{"output_tokens":0}');
+              }
+            } else if (chunkStr.trim().startsWith('{')) {
+              // Non-streaming JSON fallback
+              try {
+                let obj = JSON.parse(chunkStr);
+                if (!obj.usage) {
+                  obj.usage = { input_tokens: 0, output_tokens: 0 };
+                  chunkStr = JSON.stringify(obj);
+                }
+              } catch(e) {}
+            }
+            
+            callback(null, Buffer.from(chunkStr, 'utf8'));
+          }
+        });
+
+        proxyRes.pipe(patchStream).pipe(res);
       });
 
       proxyReq.on('error', (err) => {
@@ -151,10 +211,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, '127.0.0.1', () => {
-  console.log(`\n======================================================`);
-  console.log(`🚀 CodeRouter Smart Proxy listening on http://127.0.0.1:${PORT}`);
-  console.log(`💬 Default Text Model:  ${defaultModel}`);
-  console.log(`👁️  Vision Model Fallback: ${fallbackVisionModel}`);
-  console.log(`======================================================\n`);
-  console.log(`⏳ Initializing Smart Model Picker...`);
+  // Silent startup
 });

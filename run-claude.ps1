@@ -21,7 +21,8 @@ if (Test-Path $envFile) {
 }
 
 # Configure OpenRouter and Proxy
-$proxyProcess = Start-Process node -ArgumentList (Join-Path $PSScriptRoot "proxy.js") -PassThru -NoNewWindow
+$proxyPath = Join-Path $PSScriptRoot "proxy.js"
+$proxyProcess = Start-Process node -ArgumentList "`"$proxyPath`"" -PassThru -NoNewWindow
 Start-Sleep -Seconds 1
 
 $env:ANTHROPIC_BASE_URL = "http://127.0.0.1:3000"
