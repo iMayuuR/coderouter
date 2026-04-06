@@ -3,233 +3,275 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CodeRouter — Run Claude Code with Any AI Model</title>
-  <meta name="description" content="CodeRouter lets you use Claude Code with 200+ AI models via OpenRouter. No Anthropic account needed. Free models available. One config file to rule them all." />
-  <meta name="keywords" content="Claude Code, OpenRouter, AI Agent, coding assistant, free AI models, GPT, Gemini, LLama" />
-  <meta name="author" content="CodeRouter" />
+  <title>CodeRouter — Claude Code with Any Model &amp; 200+ Skills</title>
+  <meta name="description" content="Run Claude Code with OpenRouter: 200+ models, smart vision routing, 200+ global skills, and MCP — no Anthropic account required." />
+  <meta name="keywords" content="Claude Code, OpenRouter, AI coding agent, free models, skills, MCP, GPT, Gemini, Llama" />
+  <meta name="author" content="CodeRouter Contributors" />
   <meta property="og:title" content="CodeRouter — Any Model, One Agent" />
-  <meta property="og:description" content="Run Claude Code with 200+ AI models. No Anthropic account needed." />
+  <meta property="og:description" content="Claude Code + OpenRouter: hundreds of models, vision routing, bundled skills, global setup." />
+  <meta property="og:image" content="assets/logo.png" />
   <meta property="og:type" content="website" />
-  <meta name="theme-color" content="#6366f1" />
+  <meta name="theme-color" content="#4f46e5" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Ambient Background Glows -->
-  <div class="ambient-glow ambient-glow--1"></div>
-  <div class="ambient-glow ambient-glow--2"></div>
-  <div class="ambient-glow ambient-glow--3"></div>
+  <div class="ambient-glow ambient-glow--1" aria-hidden="true"></div>
+  <div class="ambient-glow ambient-glow--2" aria-hidden="true"></div>
+  <div class="ambient-glow ambient-glow--3" aria-hidden="true"></div>
 
-  <!-- ═══════════ NAVBAR ═══════════ -->
-  <nav class="navbar" id="navbar">
+  <nav class="navbar" id="navbar" aria-label="Primary">
     <div class="container">
       <a href="#" class="nav-brand">
-        <img src="assets/logo.png" alt="CodeRouter Logo" />
+        <img src="assets/logo.png" alt="" width="36" height="36" />
         CodeRouter
       </a>
       <div class="nav-links" id="navLinks">
         <a href="#features">Features</a>
-        <a href="#quickstart">Quick Start</a>
+        <a href="#quickstart">Quick start</a>
+        <a href="#skills">Skills</a>
         <a href="#models">Models</a>
-        <a href="#how-it-works">Architecture</a>
-        <a href="https://openrouter.ai/settings/keys" target="_blank" class="nav-cta">Get API Key →</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer" class="nav-cta">Get API key</a>
       </div>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
         <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
 
-  <!-- ═══════════ HERO ═══════════ -->
   <section class="hero section" id="hero">
     <div class="container">
       <div class="hero-content">
-        <img src="assets/logo.png" alt="CodeRouter" class="hero-logo" />
-        <span class="badge">⚡ Open Source &amp; Free to Use</span>
+        <img src="assets/logo.png" alt="CodeRouter" class="hero-logo" width="96" height="96" />
+        <span class="badge">Open source</span>
         <h1>
-          Run Claude Code with<br/>
-          <span class="gradient-text">Any AI Model</span>
+          Claude Code with<br />
+          <span class="gradient-text">any AI model</span>
         </h1>
-        <p>
-          One config file. 200+ models. Zero Anthropic account needed. 
-          Use GPT, Gemini, LLama, DeepSeek, and more — all inside Claude Code's powerful coding agent.
+        <p class="hero-lead">
+          A local OpenRouter proxy and one-shot global setup: <strong>200+ models</strong>, <strong>smart vision routing</strong>, <strong>200+ agentic skills</strong>, and MCP integrations — use an OpenRouter key, no Anthropic account required.
         </p>
         <div class="hero-buttons">
-          <a href="#quickstart" class="btn btn-primary">🚀 Get Started</a>
-          <a href="https://github.com/" target="_blank" class="btn btn-secondary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577V20.58c-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.082-.73.082-.73 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.3 1.23A11.5 11.5 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.624-5.48 5.92.43.372.823 1.102.823 2.222v3.293c0 .322.218.694.825.576C20.565 21.796 24 17.298 24 12 24 5.37 18.627 0 12 0z"/></svg>
-            View on GitHub
+          <a href="#quickstart" class="btn btn-primary">Quick start</a>
+          <a href="https://github.com/iMayuuR/coderouter" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577V20.58c-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.082-.73.082-.73 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.3 1.23A11.5 11.5 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.624-5.48 5.92.43.372.823 1.102.823 2.222v3.293c0 .322.218.694.825.576C20.565 21.796 24 17.298 24 12 24 5.37 18.627 0 12 0z"/></svg>
+            GitHub
           </a>
         </div>
         <div class="hero-stats">
           <div class="stat">
             <div class="stat-value">200+</div>
-            <div class="stat-label">AI Models</div>
+            <div class="stat-label">Models</div>
           </div>
           <div class="stat">
-            <div class="stat-value">Free</div>
-            <div class="stat-label">Models Available</div>
+            <div class="stat-value">200+</div>
+            <div class="stat-label">Skills</div>
           </div>
           <div class="stat">
-            <div class="stat-value">1 Min</div>
-            <div class="stat-label">Setup Time</div>
+            <div class="stat-value">~60s</div>
+            <div class="stat-label">Setup</div>
           </div>
           <div class="stat">
-            <div class="stat-value">MIT</div>
-            <div class="stat-label">License</div>
+            <div class="stat-value">0</div>
+            <div class="stat-label">Anthropic acct</div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ FEATURES ═══════════ -->
   <section class="section" id="features">
     <div class="container">
       <div class="section-header reveal">
-        <span class="badge">✨ Features</span>
+        <span class="badge">Features</span>
         <h2>Why <span class="gradient-text">CodeRouter</span>?</h2>
-        <p>Everything you need to supercharge your Claude Code experience with any model on the planet.</p>
+        <p class="features-lead"><strong>Same Claude Code workflow</strong> — <strong>any model you choose</strong> behind it. One OpenRouter key, a tiny local proxy (text + smart vision routing), global skills and MCP, secrets in <code>.env</code>. Swap GPT, Gemini, Llama, or free tiers without changing how you work in the terminal.</p>
       </div>
       <div class="features-grid">
         <div class="feature-card reveal">
-          <div class="feature-icon">🌐</div>
-          <h3>200+ Models</h3>
-          <p>Access GPT-4.1, Gemini 2.5 Pro, LLama 4 Maverick, DeepSeek V3, and hundreds more — all in one place.</p>
+          <div class="feature-icon" aria-hidden="true">🌐</div>
+          <h3>200+ models</h3>
+          <p>GPT-4.1, Gemini 3.1 Pro, Llama 4, DeepSeek, and the rest of OpenRouter’s catalog — one endpoint.</p>
         </div>
         <div class="feature-card reveal">
-          <div class="feature-icon">🆓</div>
-          <h3>Free Models</h3>
-          <p>Start coding for free with models like Step 3.5 Flash, Gemma 3, and Nemotron 120B. No credit card required.</p>
+          <div class="feature-icon" aria-hidden="true">👁️</div>
+          <h3>Smart vision proxy</h3>
+          <p>Detects images in prompts and routes to a vision-capable model (e.g. Qwen VL) so the terminal agent does not break on multimodal input.</p>
         </div>
         <div class="feature-card reveal">
-          <div class="feature-icon">⚡</div>
-          <h3>One-Line Switch</h3>
-          <p>Change models by editing a single line in your config. No restarts, no reconfigurations, no hassle.</p>
+          <div class="feature-icon" aria-hidden="true">🧠</div>
+          <h3>200+ agentic skills</h3>
+          <p>Brainstorming, TDD, debugging, code review, UI/UX, browser automation, security — installed globally with the setup scripts.</p>
         </div>
         <div class="feature-card reveal">
-          <div class="feature-icon">🤖</div>
-          <h3>AI-Agent Ready</h3>
-          <p>Hand the config file to any AI assistant and it will set everything up for you — automatically.</p>
+          <div class="feature-icon" aria-hidden="true">🔌</div>
+          <h3>MCP integrations</h3>
+          <p>Setup can wire MCP servers (for example <code>@21st-dev/magic</code>) so tools follow you across projects.</p>
         </div>
         <div class="feature-card reveal">
-          <div class="feature-icon">🔄</div>
-          <h3>Provider Failover</h3>
-          <p>OpenRouter automatically routes to the best available provider, ensuring maximum uptime and speed.</p>
+          <div class="feature-icon" aria-hidden="true">🌍</div>
+          <h3>Global <code>claude</code></h3>
+          <p>After <code>setup-agent.ps1</code> or <code>install-global-skills.js</code>, run <code>claude</code> from any folder — after a full terminal restart.</p>
         </div>
         <div class="feature-card reveal">
-          <div class="feature-icon">🔒</div>
-          <h3>Secure by Default</h3>
-          <p>API keys are stored in a <code>.env</code> file that's gitignored. Your secrets never touch version control.</p>
+          <div class="feature-icon" aria-hidden="true">🆓</div>
+          <h3>Free tiers</h3>
+          <p>Many strong free models on OpenRouter; pay only for what you route. Keys live in <code>.env</code> (gitignored).</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ COMPARISON ═══════════ -->
   <section class="section" id="comparison">
     <div class="container">
       <div class="section-header reveal">
-        <span class="badge">📊 Compare</span>
-        <h2>CodeRouter vs <span class="gradient-text">Direct Anthropic</span></h2>
-        <p>See how much more you get with CodeRouter.</p>
+        <span class="badge">Compare</span>
+        <h2>CodeRouter vs <span class="gradient-text">direct Anthropic</span></h2>
+        <p>Same Claude Code UX — broader model choice and optional free routes.</p>
       </div>
-      <div class="reveal">
+      <div class="reveal comparison-shell">
+        <div class="table-wrap table-wrap--centered">
         <table class="comparison-table">
           <thead>
             <tr>
-              <th>Feature</th>
+              <th>Capability</th>
               <th>Direct Anthropic</th>
-              <th>CodeRouter ✨</th>
+              <th>CodeRouter</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Available Models</td>
-              <td>Claude only</td>
-              <td>200+ models (GPT, Gemini, LLama, etc.)</td>
+              <td>Models</td>
+              <td>Claude family</td>
+              <td><span class="check">✓</span> 200+ via OpenRouter</td>
             </tr>
             <tr>
-              <td>Free Models</td>
+              <td>Free model options</td>
               <td><span class="cross">✕</span></td>
-              <td><span class="check">✓</span> Many free options</td>
+              <td><span class="check">✓</span> Many free endpoints</td>
             </tr>
             <tr>
-              <td>Anthropic Account</td>
+              <td>Anthropic account</td>
               <td>Required</td>
-              <td><span class="check">✓</span> Not needed</td>
+              <td><span class="check">✓</span> Not required</td>
             </tr>
             <tr>
-              <td>Provider Failover</td>
+              <td>Vision routing</td>
+              <td>Native to Claude</td>
+              <td><span class="check">✓</span> Smart proxy to vision models</td>
+            </tr>
+            <tr>
+              <td>Bundled skills + MCP</td>
+              <td>Bring your own</td>
+              <td><span class="check">✓</span> One-shot global install</td>
+            </tr>
+            <tr>
+              <td>Provider failover</td>
               <td><span class="cross">✕</span></td>
-              <td><span class="check">✓</span> Automatic</td>
-            </tr>
-            <tr>
-              <td>Switch Models</td>
-              <td>Hard</td>
-              <td><span class="check">✓</span> Edit one line</td>
-            </tr>
-            <tr>
-              <td>AI-Agent Auto Setup</td>
-              <td><span class="cross">✕</span></td>
-              <td><span class="check">✓</span> JSON config blueprint</td>
+              <td><span class="check">✓</span> OpenRouter routing</td>
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ QUICK START ═══════════ -->
   <section class="section" id="quickstart">
     <div class="container">
       <div class="section-header reveal">
-        <span class="badge">🚀 Quick Start</span>
-        <h2>Up and Running in <span class="gradient-text">3 Steps</span></h2>
-        <p>From zero to coding with any AI model in under a minute using your favorite AI Agent.</p>
+        <span class="badge">Quick start</span>
+        <h2>~60 seconds to <span class="gradient-text">Claude Code</span></h2>
+        <p>Matches <a href="https://github.com/iMayuuR/coderouter/blob/main/QUICKSTART.md" target="_blank" rel="noopener noreferrer">QUICKSTART.md</a> — five beats from clone to a global <code>claude</code> command.</p>
       </div>
-      <div class="steps">
+
+      <div class="quickstart-track reveal">
+      <div class="steps steps--five">
         <div class="step-card reveal">
           <div class="step-number">1</div>
-          <h3>📋 Copy Setup Prompt</h3>
-          <p>Click the "Copy AI Agent Setup Prompt" button below to get complete installation instructions.</p>
+          <h3>Clone &amp; install</h3>
+          <div class="step-commands">
+            <code class="step-cmd">git clone https://github.com/iMayuuR/coderouter.git</code>
+            <code class="step-cmd">cd coderouter</code>
+            <code class="step-cmd">npm install</code>
+          </div>
         </div>
         <div class="step-card reveal">
           <div class="step-number">2</div>
-          <h3>🤖 Send to AI Assistant</h3>
-          <p>Paste the prompt into your AI assistant (Cursor, Claude Desktop, Windsurf, etc.). It will read your <code>ai-agent-config.json</code>, then automatically clone, install, configure dependencies, and test CodeRouter.</p>
+          <h3>Create <code>.env</code></h3>
+          <div class="step-commands">
+            <span class="step-label">Windows</span>
+            <code class="step-cmd">copy .env.example .env</code>
+            <span class="step-label">macOS / Linux</span>
+            <code class="step-cmd">cp .env.example .env</code>
+            <p class="step-note">Set <code>OPENROUTER_API_KEY</code> and <code>CLAUDE_MODEL</code> (e.g. <code>openrouter/free</code>).</p>
+          </div>
         </div>
         <div class="step-card reveal">
           <div class="step-number">3</div>
-          <h3>🚀 Launch CodeRouter</h3>
-          <p>After setup completes, run <code>.\run-claude.ps1</code> (Windows) or <code>./run-claude.sh</code> (Unix) and start coding with 200+ AI models.</p>
+          <h3>One-shot setup</h3>
+          <div class="step-commands">
+            <span class="step-label">Windows (PowerShell)</span>
+            <code class="step-cmd">.\setup-agent.ps1</code>
+            <span class="step-label">Any OS</span>
+            <code class="step-cmd">node install-global-skills.js</code>
+            <p class="step-note">Proxy alias, skills, MCP — global.</p>
+          </div>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-number">4</div>
+          <h3>Restart terminal</h3>
+          <p class="step-note step-note--strong">Close <strong>every</strong> terminal window, open a new one so your shell profile reloads.</p>
+        </div>
+        <div class="step-card reveal">
+          <div class="step-number">5</div>
+          <h3>Run anywhere</h3>
+          <div class="step-commands">
+            <code class="step-cmd">claude</code>
+            <p class="step-note">From any folder, after step 4.</p>
+          </div>
         </div>
       </div>
 
-        <!-- AI Agent Prompt Button -->
-        <div class="ai-prompt-section reveal" style="margin-top: 2.5rem; text-align: center; padding: 2rem; background: rgba(99, 102, 241, 0.05); border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.15);">
-          <h3 style="margin-bottom: 1rem; font-size: 1.4rem;">🤖 Or Let Your AI Agent Do Everything</h3>
-          <p style="color: var(--text-muted); margin-bottom: 1.5rem; max-width: 600px; margin-left: auto; margin-right: auto;">
-            Click the button below to copy a complete setup prompt. Paste it into your AI assistant (Cursor, Claude Desktop, Windsurf, etc.) and it will automatically clone the repository, install dependencies, configure your API key, and set up CodeRouter for you.
-          </p>
-          <button class="btn btn-primary" id="copyAgentPrompt" onclick="copyAgentPrompt()">
-            📋 Copy Complete Setup Prompt
-          </button>
-          <p id="copySuccess" style="color: #22c55e; margin-top: 0.75rem; font-size: 0.9rem; display: none;">✓ Prompt copied to clipboard!</p>
-        </div>
+      <div class="restart-callout">
+        <span aria-hidden="true">⚠️</span>
+        <p><strong>Restart required.</strong> If <code>claude</code> is not found, you skipped a full terminal restart — close every window, open a fresh one, try again.</p>
+      </div>
+      </div>
 
-      <!-- Config Code Block -->
-      <div class="code-section reveal" style="margin-top: 3.5rem;">
-        <div class="code-desc">
-          <h3>📁 AI Agent Configuration</h3>
-          <p>This file tells the AI agent which model to use. <strong>You need to edit it manually</strong> with your OpenRouter API key and preferred model before giving it to your AI assistant.</p>
-          <ul>
-            <li>Download this file and add your OpenRouter API key</li>
-            <li>Choose your preferred model from the supported list</li>
-            <li>Then give this <strong>edited file</strong> to your AI assistant along with the copy prompt</li>
-            <li>The AI uses this config to know what to install and launch</li>
-          </ul>
+      <div class="ai-prompt-panel reveal">
+        <h3>Let an AI agent run the setup</h3>
+        <p class="ai-prompt-lead">
+          Copy the prompt below and paste it into Cursor, Claude, Windsurf, or any coding agent. It mirrors QUICKSTART: clone (or use an existing repo), <code>npm install</code>, create <code>.env</code> from the example with your OpenRouter key and model, run <code>.\setup-agent.ps1</code> on Windows or <code>node install-global-skills.js</code> everywhere else, then insist on a <strong>full terminal restart</strong> before using <code>claude</code>.
+        </p>
+        <div class="ai-prompt-actions">
+          <button type="button" class="btn btn-primary" id="copyAgentPrompt">
+            Copy setup prompt for AI
+          </button>
+        </div>
+        <p class="copy-success" id="copySuccess" role="status">Copied to clipboard.</p>
+      </div>
+
+      <div class="code-section code-section--pair reveal">
+        <div class="code-desc code-desc--config code-panel">
+          <h3>Optional: <code>ai-agent-config.json</code></h3>
+          <p class="code-desc-intro">Agents can read this file for your key and model. Edit <code>user_preferences</code>, then share the file plus the copied setup prompt.</p>
+          <ol class="config-checklist">
+            <li>
+              <span class="config-checklist-title">Credentials</span>
+              <span class="config-checklist-body">Set <code>api_key</code> and <code>model</code> (example: <code>openrouter/free</code>).</span>
+            </li>
+            <li>
+              <span class="config-checklist-title">Install &amp; env</span>
+              <span class="config-checklist-body">Agent runs <code>npm install</code> and creates <code>.env</code> from <code>.env.example</code>.</span>
+            </li>
+            <li>
+              <span class="config-checklist-title">How you launch</span>
+              <span class="config-checklist-body">Per-session: Windows <code class="code-nowrap">.\run-claude.ps1</code> · Unix <code class="code-nowrap">./run-claude.sh</code>. After global setup + restart: use <code>claude</code> anywhere.</span>
+            </li>
+          </ol>
         </div>
         <div class="code-block">
           <div class="code-header">
@@ -242,11 +284,12 @@
 <pre>{
   <span class="hl-key">"user_preferences"</span>: {
     <span class="hl-key">"api_key"</span>: <span class="hl-str">"sk-or-v1-..."</span>,
-    <span class="hl-key">"model"</span>: <span class="hl-str">"stepfun/step-3.5-flash:free"</span>,
+    <span class="hl-key">"model"</span>: <span class="hl-str">"openrouter/free"</span>,
     <span class="hl-key">"is_default"</span>: <span class="hl-bool">true</span>
   },
   <span class="hl-key">"agent_actions"</span>: {
     <span class="hl-key">"install_dependencies"</span>: <span class="hl-str">"npm install"</span>,
+    <span class="hl-key">"configure_env"</span>: <span class="hl-str">".env from .env.example + user_preferences"</span>,
     <span class="hl-key">"launch_on_windows"</span>: <span class="hl-str">".\\run-claude.ps1"</span>,
     <span class="hl-key">"launch_on_unix"</span>: <span class="hl-str">"./run-claude.sh"</span>
   }
@@ -257,27 +300,66 @@
     </div>
   </section>
 
-  <!-- ═══════════ MODELS ═══════════ -->
+  <section class="section" id="skills">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="badge">Skills</span>
+        <h2>200+ <span class="gradient-text">bundled skills</span></h2>
+        <p>Categories from the README — invoke by name in natural language after global install.</p>
+      </div>
+      <div class="skills-board reveal">
+        <div class="skill-tile">
+          <span class="skill-tile-icon" aria-hidden="true">⚙️</span>
+          <h3 class="skill-tile-title">Development</h3>
+          <p class="skill-tile-desc">TDD, debugging, code review, git worktrees</p>
+        </div>
+        <div class="skill-tile">
+          <span class="skill-tile-icon" aria-hidden="true">📐</span>
+          <h3 class="skill-tile-title">Planning</h3>
+          <p class="skill-tile-desc">Brainstorming, writing and executing plans</p>
+        </div>
+        <div class="skill-tile">
+          <span class="skill-tile-icon" aria-hidden="true">🛡️</span>
+          <h3 class="skill-tile-title">Security</h3>
+          <p class="skill-tile-desc">Audits, hardening, safe review patterns</p>
+        </div>
+        <div class="skill-tile">
+          <span class="skill-tile-icon" aria-hidden="true">🎨</span>
+          <h3 class="skill-tile-title">UI &amp; automation</h3>
+          <p class="skill-tile-desc">UI/UX, web artifacts, browser use, parallel agents</p>
+        </div>
+        <div class="skill-tile">
+          <span class="skill-tile-icon" aria-hidden="true">🧩</span>
+          <h3 class="skill-tile-title">Memory</h3>
+          <p class="skill-tile-desc">Persistent context patterns across sessions (Claude Mem–style workflows)</p>
+        </div>
+      </div>
+      <p class="skills-tip reveal">
+        <strong>Tip:</strong> If <code>/skills</code> shows “0”, it may be a CLI display quirk — ask for a skill by name anyway (see QUICKSTART).
+      </p>
+    </div>
+  </section>
+
   <section class="section" id="models">
     <div class="container">
       <div class="section-header reveal">
-        <span class="badge">🧠 Models</span>
-        <h2>Pick Your <span class="gradient-text">Favorite Model</span></h2>
-        <p>From free community models to cutting-edge premium ones — the choice is yours.</p>
+        <span class="badge">Models</span>
+        <h2>Pick a <span class="gradient-text">model ID</span></h2>
+        <p>Set <code>CLAUDE_MODEL</code> in <code>.env</code> to any OpenRouter model. Click an ID to copy.</p>
       </div>
       <div class="models-grid reveal">
         <div class="model-group">
-          <div class="model-group-label model-group-label--free">🆓 Free Models</div>
+          <div class="model-group-label model-group-label--free">Free</div>
+          <div class="model-item">
+            <span class="model-name">OpenRouter free route</span>
+            <span class="model-id">openrouter/free</span>
+          </div>
           <div class="model-item">
             <span class="model-name">Step 3.5 Flash</span>
             <span class="model-id">stepfun/step-3.5-flash:free</span>
           </div>
           <div class="model-item">
-            <span class="model-name">Nemotron 120B</span>
-            <span class="model-id">nvidia/nemotron-3-super-120b-a12b:free</span>
-          </div>
-          <div class="model-item">
-            <span class="model-name">LLama 4 Maverick</span>
+            <span class="model-name">Llama 4 Maverick</span>
             <span class="model-id">meta-llama/llama-4-maverick:free</span>
           </div>
           <div class="model-item">
@@ -290,14 +372,14 @@
           </div>
         </div>
         <div class="model-group">
-          <div class="model-group-label model-group-label--paid">💎 Premium Models</div>
+          <div class="model-group-label model-group-label--paid">Premium</div>
           <div class="model-item">
-            <span class="model-name">Auto (Best Match)</span>
+            <span class="model-name">Auto (best match)</span>
             <span class="model-id">openrouter/auto</span>
           </div>
           <div class="model-item">
-            <span class="model-name">Claude 4.6 Sonnet</span>
-            <span class="model-id">anthropic/claude-4.6-sonnet</span>
+            <span class="model-name">Claude Sonnet</span>
+            <span class="model-id">anthropic/claude-3.7-sonnet</span>
           </div>
           <div class="model-item">
             <span class="model-name">GPT-4.1</span>
@@ -307,179 +389,191 @@
             <span class="model-name">Gemini 3.1 Pro</span>
             <span class="model-id">google/gemini-3.1-pro</span>
           </div>
-          <div class="model-item">
-            <span class="model-name">Claude 4.6 Opus</span>
-            <span class="model-id">anthropic/claude-4.6-opus</span>
-          </div>
         </div>
       </div>
-      <p style="text-align: center; margin-top: 1.5rem; color: var(--text-muted); font-size: .88rem;" class="reveal">
-        📋 Full model list → <a href="https://openrouter.ai/models" target="_blank">openrouter.ai/models</a>
+      <p class="models-footnote reveal">
+        Full catalog: <a href="https://openrouter.ai/models" target="_blank" rel="noopener noreferrer">openrouter.ai/models</a>
       </p>
-      <p style="text-align: center; margin-top: 0.5rem; color: #ef4444; font-size: .85rem; max-width: 600px; margin-left: auto; margin-right: auto;" class="reveal">
-        ⚠️ <strong>Disclaimer:</strong> Please note that free models may use your inputs and code data for training purposes. Avoid sending sensitive or proprietary information when using free tiers.
+      <p class="models-disclaimer reveal">
+        Free tiers may use prompts for training. Do not send secrets or proprietary code you are not allowed to share.
       </p>
     </div>
   </section>
 
-  <!-- ═══════════ HOW IT WORKS ═══════════ -->
   <section class="section" id="how-it-works">
     <div class="container">
       <div class="section-header reveal">
-        <span class="badge">⚙️ Architecture</span>
-        <h2>How <span class="gradient-text">It Works</span></h2>
-        <p>A transparent proxy layer that makes Claude Code model-agnostic.</p>
+        <span class="badge">Architecture</span>
+        <h2>How <span class="gradient-text">it works</span></h2>
+        <p>Local Node proxy: text stays on your chosen model; images can route to <code>VISION_MODEL</code>.</p>
       </div>
       <div class="arch-flow reveal">
         <div class="arch-node">
-          <div class="arch-node-icon">💻</div>
+          <div class="arch-node-icon" aria-hidden="true">💻</div>
           <div class="arch-node-title">Claude Code</div>
-          <div class="arch-node-subtitle">Your Terminal</div>
+          <div class="arch-node-subtitle">Your terminal</div>
         </div>
-        <div class="arch-arrow">→</div>
+        <div class="arch-arrow" aria-hidden="true">→</div>
         <div class="arch-node">
-          <div class="arch-node-icon">🌐</div>
+          <div class="arch-node-icon" aria-hidden="true">⚡</div>
+          <div class="arch-node-title">CodeRouter proxy</div>
+          <div class="arch-node-subtitle">Vision + routing</div>
+        </div>
+        <div class="arch-arrow" aria-hidden="true">→</div>
+        <div class="arch-node">
+          <div class="arch-node-icon" aria-hidden="true">🌐</div>
           <div class="arch-node-title">OpenRouter</div>
-          <div class="arch-node-subtitle">API Proxy</div>
+          <div class="arch-node-subtitle">Anthropic-compatible API</div>
         </div>
-        <div class="arch-arrow">→</div>
+        <div class="arch-arrow" aria-hidden="true">→</div>
         <div class="arch-node">
-          <div class="arch-node-icon">🧠</div>
-          <div class="arch-node-title">Your Model</div>
-          <div class="arch-node-subtitle">GPT / Gemini / LLama / etc.</div>
+          <div class="arch-node-icon" aria-hidden="true">🧠</div>
+          <div class="arch-node-title">Your model</div>
+          <div class="arch-node-subtitle">GPT · Gemini · Llama · …</div>
         </div>
       </div>
-      <div class="steps reveal" style="margin-top: 2.5rem;">
+      <div class="steps-arch reveal">
         <div class="step-card">
           <div class="step-number">1</div>
-          <h3>Environment Override</h3>
-          <p>The launcher script sets <code>ANTHROPIC_BASE_URL</code> to point at OpenRouter instead of Anthropic's servers.</p>
+          <h3>Base URL override</h3>
+          <p>Launchers set <code>ANTHROPIC_BASE_URL</code> (and related env) so Claude Code talks to the proxy instead of Anthropic directly.</p>
         </div>
         <div class="step-card">
           <div class="step-number">2</div>
           <h3>Compatible API</h3>
-          <p>OpenRouter's Anthropic-compatible endpoint makes Claude Code think it's talking to Anthropic directly.</p>
+          <p>OpenRouter’s Anthropic-shaped endpoint keeps the Claude Code client happy while the real model ID lives in your config.</p>
         </div>
         <div class="step-card">
           <div class="step-number">3</div>
-          <h3>Smart Routing</h3>
-          <p>OpenRouter routes your request to whatever model you've configured — with automatic provider failover.</p>
+          <h3>Failover</h3>
+          <p>OpenRouter picks healthy providers; you switch models by editing <code>.env</code>, not by reinstalling the agent.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ CTA ═══════════ -->
   <section class="cta-section">
     <div class="container">
       <div class="cta-box reveal">
-        <h2>Ready to <span class="gradient-text">Forge Your Agent</span>?</h2>
-        <p>Get started in under a minute. Pick any model, paste your key, and start building.</p>
+        <h2>Ready to <span class="gradient-text">route your agent</span>?</h2>
+        <p>Clone the repo, paste your OpenRouter key, run the one-shot setup, restart the terminal, type <code>claude</code>.</p>
         <div class="hero-buttons">
-          <a href="#quickstart" class="btn btn-primary">🚀 Get Started Now</a>
-          <a href="https://openrouter.ai/settings/keys" target="_blank" class="btn btn-secondary">🔑 Get Free API Key</a>
+          <a href="#quickstart" class="btn btn-primary">Start here</a>
+          <a href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">OpenRouter keys</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ FOOTER ═══════════ -->
   <footer class="footer">
-    <div class="container">
-      <p>
-        Built with 💜 by <a href="#">CodeRouter</a> · MIT License · 
-        Powered by <a href="https://openrouter.ai" target="_blank">OpenRouter</a>
-      </p>
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="" width="32" height="32" class="footer-logo" />
+        <span class="footer-name">CodeRouter</span>
+      </div>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="https://github.com/iMayuuR/coderouter" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="https://github.com/iMayuuR/coderouter/blob/main/QUICKSTART.md" target="_blank" rel="noopener noreferrer">Quickstart</a>
+        <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer">OpenRouter</a>
+        <a href="#quickstart">Docs</a>
+      </nav>
+      <p class="footer-tagline">Claude Code · any model · one setup</p>
     </div>
   </footer>
 
-  <!-- ═══════════ SCRIPTS ═══════════ -->
   <script>
-    // Mobile Nav Toggle
-    const toggle = document.getElementById('navToggle');
-    const links  = document.getElementById('navLinks');
-    toggle.addEventListener('click', () => links.classList.toggle('active'));
+    (function () {
+      const toggle = document.getElementById('navToggle');
+      const links = document.getElementById('navLinks');
+      const navbar = document.getElementById('navbar');
 
-    // Close mobile nav on link click
-    links.querySelectorAll('a').forEach(a =>
-      a.addEventListener('click', () => links.classList.remove('active'))
-    );
-
-    // Scroll Reveal
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
+      toggle.addEventListener('click', function () {
+        const open = links.classList.toggle('active');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
       });
-    }, { threshold: 0.12 });
-    reveals.forEach(el => observer.observe(el));
 
-    // Copy model IDs on click
-    document.querySelectorAll('.model-id').forEach(el => {
-      el.style.cursor = 'pointer';
-      el.title = 'Click to copy';
-      el.addEventListener('click', () => {
-        navigator.clipboard.writeText(el.textContent).then(() => {
-          const original = el.textContent;
-          el.textContent = '✓ Copied!';
-          el.style.color = '#22c55e';
-          setTimeout(() => {
-            el.textContent = original;
-            el.style.color = '';
-          }, 1200);
+      links.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          links.classList.remove('active');
+          toggle.setAttribute('aria-expanded', 'false');
+          toggle.setAttribute('aria-label', 'Open menu');
         });
       });
-    });
 
-    // Copy AI Agent Setup Prompt
-    function copyAgentPrompt() {
-      const prompt = `Set up CodeRouter on my system. Here's what to do:
+      window.addEventListener('scroll', function () {
+        navbar.classList.toggle('is-scrolled', window.scrollY > 24);
+      }, { passive: true });
 
-1. **Get the Repository:**
-   - Clone: git clone https://github.com/iMayuuR/coderouter.git
-   - cd coderouter
-   - (If already in the repo directory, skip this)
-
-2. **Read Configuration:**
-   - Look for ai-agent-config.json in the repository
-   - Note the API key placeholder and model settings
-   - I will provide my OpenRouter API key and preferred model
-
-3. **Install Dependencies:**
-   - Run: npm install
-
-4. **Configure Environment:**
-   - Create .env from .env.example
-   - Set OPENROUTER_API_KEY with my API key
-   - Set CLAUDE_MODEL with my preferred model
-
-5. **Update ai-agent-config.json:**
-   - Edit the file with my provided:
-     * api_key: [my OpenRouter API key]
-     * model: [my preferred model, e.g., stepfun/step-3.5-flash:free]
-   - Leave other fields as-is
-
-6. **Test:**
-   - Run: .\\run-claude.ps1 (Windows) or ./run-claude.sh (Unix)
-   - Verify Claude Code starts and connects through OpenRouter
-
-7. **Done!** I should now have access to 200+ AI models without an Anthropic account.
-
-Let me know if you need my API key and model preference to proceed.`;
-
-      navigator.clipboard.writeText(prompt).then(() => {
-        const successMsg = document.getElementById('copySuccess');
-        successMsg.style.display = 'block';
-        setTimeout(() => {
-          successMsg.style.display = 'none';
-        }, 3000);
-      }).catch(err => {
-        console.error('Failed to copy: ', err);
-        alert('Failed to copy. Please select and copy the text manually.');
+      document.querySelectorAll('.reveal').forEach(function (el) {
+        new IntersectionObserver(function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }).observe(el);
       });
-    }
+
+      document.querySelectorAll('.model-id').forEach(function (el) {
+        el.style.cursor = 'pointer';
+        el.title = 'Click to copy';
+        el.addEventListener('click', function () {
+          var text = el.textContent;
+          navigator.clipboard.writeText(text).then(function () {
+            el.textContent = 'Copied!';
+            el.style.color = '#34d399';
+            setTimeout(function () {
+              el.textContent = text;
+              el.style.color = '';
+            }, 1200);
+          });
+        });
+      });
+
+      var AGENT_SETUP_PROMPT = [
+        'Set up CodeRouter on my machine using the official quickstart (https://github.com/iMayuuR/coderouter).',
+        '',
+        'Repository: https://github.com/iMayuuR/coderouter.git',
+        '',
+        '1) Clone and install (skip clone if I already have the repo):',
+        '   git clone https://github.com/iMayuuR/coderouter.git',
+        '   cd coderouter',
+        '   npm install',
+        '',
+        '2) Configure API key — create .env from .env.example:',
+        '   Windows: copy .env.example .env',
+        '   macOS/Linux: cp .env.example .env',
+        '   Set OPENROUTER_API_KEY to my key (ask me if missing).',
+        '   Set CLAUDE_MODEL — default suggestion: openrouter/free (or use the model in ai-agent-config.json if I provide that file).',
+        '',
+        '3) One-shot global setup (choose the right command for my OS):',
+        '   Windows PowerShell: .\\setup-agent.ps1',
+        '   Any OS: node install-global-skills.js',
+        '',
+        '4) CRITICAL: Tell me to fully close every terminal window and open a new one so my shell profile reloads and the `claude` command is on PATH.',
+        '',
+        '5) After restart, from any folder I should run: claude',
+        '',
+        '6) Skills: 200+ global skills are installed by the script. If the CLI /skills UI shows 0, that can be a display bug — skills still work when invoked by name.',
+        '',
+        '7) Optional: if I attached ai-agent-config.json, copy api_key and model from user_preferences into .env before running setup.',
+        '',
+        'Report what you ran and any errors verbatim.'
+      ].join('\n');
+
+      var btn = document.getElementById('copyAgentPrompt');
+      var successMsg = document.getElementById('copySuccess');
+      btn.addEventListener('click', function () {
+        navigator.clipboard.writeText(AGENT_SETUP_PROMPT).then(function () {
+          successMsg.classList.add('is-visible');
+          setTimeout(function () { successMsg.classList.remove('is-visible'); }, 3200);
+        }).catch(function () {
+          alert('Could not copy. Select the prompt from the repo QUICKSTART or README and copy manually.');
+        });
+      });
+    })();
   </script>
 
 </body>

@@ -11,11 +11,23 @@
     "openrouter",
     "ai",
     "coding-agent",
-    "llm"
+    "llm",
+    "free-ai",
+    "smart-routing"
   ],
-  "author": "",
+  "author": "CodeRouter Contributors",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iMayuuR/coderouter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iMayuuR/coderouter/issues"
+  },
+  "homepage": "https://github.com/iMayuuR/coderouter#readme",
   "dependencies": {
-    "@anthropic-ai/claude-code": "^2.1.83"
+    "@anthropic-ai/claude-code": "^2.1.83",
+    "dotenv": "^17.4.0",
+    "framer-motion": "^12.38.0"
   }
 }

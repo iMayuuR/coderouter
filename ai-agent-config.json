@@ -7,7 +7,7 @@
   },
   "user_preferences": {
     "api_key": "sk-or-v1-...",
-    "model": "stepfun/step-3.5-flash:free",
+    "model": "openrouter/free",
     "is_default": true
   },
   "setup_instructions": {
@@ -19,7 +19,7 @@
     "free_fast": "stepfun/step-3.5-flash:free",
     "best_coding": "anthropic/claude-3-7-sonnet",
     "cheap_powerful": "deepseek/deepseek-chat-v3",
-    "meta_llama": "meta-llama/llama-3.1-405b-instruct",
+    "meta_llama": "meta-llama/llama-3.3-70b-instruct:free",
     "nemotron_120b": "nvidia/nemotron-3-super-120b-a12b:free",
     "qwen_3_6_plus": "qwen/qwen3.6-plus-preview:free",
     "sora_2_pro": "openai/sora-2-pro",

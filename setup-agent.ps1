@@ -69,6 +69,10 @@ $updatedContent | Set-Content $envPath
 Write-Host "✅ .env updated with your preferences." -ForegroundColor Green
 
 Write-Host ""
+Write-Host "🌍 Installing Global Skills and MCP Plugins..." -ForegroundColor Cyan
+node install-global-skills.js
+
+Write-Host ""
 Write-Host "🎉 Setup Complete!" -ForegroundColor Green
 Write-Host "You can now run Claude Code using: .\run-claude.ps1" -ForegroundColor Cyan
 Write-Host ""

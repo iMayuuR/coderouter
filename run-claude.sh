@@ -21,8 +21,14 @@ else
     exit 1
 fi
 
-# Configure OpenRouter
-export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
+# Start Smart Image Routing Proxy
+node "$SCRIPT_DIR/proxy.js" &
+PROXY_PID=$!
+trap 'kill $PROXY_PID 2>/dev/null' EXIT
+sleep 1
+
+# Configure OpenRouter via Proxy
+export ANTHROPIC_BASE_URL="http://127.0.0.1:3000"
 export ANTHROPIC_AUTH_TOKEN="$OPENROUTER_API_KEY"
 export ANTHROPIC_API_KEY=""
 export ANTHROPIC_DEFAULT_OPUS_MODEL="$CLAUDE_MODEL"

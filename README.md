@@ -1,83 +1,92 @@
+<p align="center">
+  <img src="docs/assets/logo.png" width="128" alt="CodeRouter Logo">
+</p>
+
 # 🤖 CodeRouter
 
-> **Run Claude Code with ANY AI model — no Anthropic account needed.**
+<p align="center">
+  <img src="https://img.shields.io/github/license/iMayuuR/coderouter?style=for-the-badge&color=6366f1" alt="License">
+  <img src="https://img.shields.io/github/stars/iMayuuR/coderouter?style=for-the-badge&color=22c55e" alt="Stars">
+  <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=for-the-badge" alt="PRs Welcome">
+</p>
 
-[CodeRouter](https://github.com/iMayuuR/coderouter) is a configuration wrapper for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (Anthropic's official AI coding agent) powered by [OpenRouter](https://openrouter.ai/). It gives you access to **hundreds of models** — including free ones — all through a single setup.
+> **Run Claude Code with ANY AI model — no Anthropic account needed. Now featuring ✨ Smart Vision Routing, 🧠 200+ Global Skills, and 🔌 MCP Integrations!**
+
+[CodeRouter](https://github.com/iMayuuR/coderouter) is a configuration wrapper and local proxy for [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (Anthropic's official AI coding agent) powered by [OpenRouter](https://openrouter.ai/). It gives you access to **hundreds of models** — including free ones — all through a single setup.
 
 ---
 
 ## ✨ Features
 
 - **200+ Models:** GPT-4.1, Gemini 3.1 Pro, Llama 4, and more.
+- **👁️ Smart Vision Proxy:** Detects image inputs and automatically routes them to a vision-capable free model (e.g., Qwen 2 VL) so your terminal never breaks.
+- **🧠 200+ Agentic Skills:** Pre-loaded skills for brainstorming, TDD, debugging, code review, UI/UX design, browser automation, security auditing, and more — all available globally.
+- **🔌 MCP Integrations:** Auto-configures MCP servers (like @21st-dev/magic) globally.
+- **🌍 Global Setup:** One command installs skills, proxy alias, and MCP across your entire system.
 - **Zero Account Needed:** Use your OpenRouter API key.
 - **Free Options:** Many powerful free models available.
-- **AI-Agent Ready:** Includes a `ai-agent-config.json` for automatic setup by AI assistants.
-- **Easy Launcher:** Cross-platform scripts for Windows, Mac, and Linux.
 
 ---
 
-## 🚀 Quick Start (AI Agent Method)
+## 🚀 One-Shot Setup
 
-The easiest way to get started is to let your AI assistant (Cursor, Claude, Antigravity) handle it:
+The easiest way to get started:
 
-1. **Download/Edit [ai-agent-config.json](ai-agent-config.json)**: Enter your OpenRouter API key and preferred model.
-2. **Give it to your AI Agent**: Say *"Please set up this project for me using the config file."*
-3. **Run**: Once finished, execute `.\run-claude.ps1` (Windows) or `./run-claude.sh` (Unix).
+1. **Clone & Install**:
+   ```bash
+   git clone https://github.com/iMayuuR/coderouter.git
+   cd coderouter && npm install
+   ```
 
----
+2. **Configure**:
+   Copy `.env.example` to `.env` and add your [OpenRouter API Key](https://openrouter.ai/settings/keys).
 
-## 🛠️ Manual Setup
+3. **Global Setup**:
+   Run `.\setup-agent.ps1` (Windows) or `node install-global-skills.js`.
 
-### 1. Install Dependencies
+4. **⚠️ RESTART YOUR TERMINAL**:
+   Close all terminal windows and reopen.
 
-```bash
-npm install
-```
+5. **Type `claude` from ANY folder!**
 
-### 2. Configure Environment
-
-Copy the example config:
-- **Windows:** `copy .env.example .env`
-- **Unix:** `cp .env.example .env`
-
-Edit `.env` and add your [OpenRouter API Key](https://openrouter.ai/settings/keys):
-
-```env
-OPENROUTER_API_KEY=sk-or-v1-your-key
-CLAUDE_MODEL=google/gemini-3.1-pro
-```
-
-### 3. Launch
-
-- **Windows (PowerShell):** `.\run-claude.ps1`
-- **Unix (Bash):** `./run-claude.sh`
+> See the [QUICKSTART.md](QUICKSTART.md) for more details.
 
 ---
 
-## 🧠 Recommended Models
+## 🧠 Bundled Skills (200+)
 
-| Category | Model Name | `.env` Value |
-|---|---|---|
-| **Best Coding** | Claude 4.6 Sonnet | `anthropic/claude-4.6-sonnet` |
-| **Most Powerful** | Claude 4.6 Opus | `anthropic/claude-4.6-opus` |
-| **Top Tier** | Gemini 3.1 Pro | `google/gemini-3.1-pro` |
-| **Fast & Free** | Step 3.5 Flash | `stepfun/step-3.5-flash:free` |
-| **Large & Free** | Nemotron 120B | `nvidia/nemotron-3-super-120b-a12b:free` |
+CodeRouter comes pre-loaded with **200+ agentic skills** that supercharge Claude Code:
 
-> ⚠️ **Disclaimer:** Please be aware that free models may use your inputs and interaction data for their own training purposes. Exercise caution and avoid sending sensitive or proprietary information when using free tiers.
+| Category | Example Skills |
+|---|---|
+| **Development** | TDD, Systematic Debugging, Code Review, Git Worktrees |
+| **Planning** | Brainstorming, Writing Plans, Executing Plans |
+| **Security** | Shannon Pentester, Security Auditing |
+| **UI/UX** | UI/UX Pro Max, Frontend Design, Web Artifacts |
+| **Automation** | Browser Use, Parallel Agents, Subagent-Driven Development |
+| **Memory** | Claude Mem (Persistent Memory across sessions) |
 
 ---
 
-## 🔧 How It Works
+## 🔧 How It Works: The Smart Proxy
 
-CodeRouter acts as a proxy layer, redirecting Claude Code's requests to OpenRouter's Anthropic-compatible API.
+CodeRouter runs a tiny local Node.js proxy behind the scenes. It redirects Claude Code's requests and intercepts the JSON payload.
+If it detects an **image** in your prompt, it momentarily routes the request to your configured `VISION_MODEL` (which supports images natively!). Otherwise, it sticks to your hyper-fast `CLAUDE_MODEL`.
 
-```
+```text
 ┌─────────────┐        ┌──────────────┐        ┌──────────────────┐
-│  Claude Code │──API──▶│  OpenRouter   │──API──▶│  Your Chosen     │
-│  (Terminal)  │◀───────│  (Proxy)     │◀───────│  AI Model        │
+│             │        │              │──Text──▶│  Standard Model  │
+│ Claude Code │──API──▶│ Local Proxy  │        └──────────────────┘
+│ (Terminal)  │◀───────│ (localhost)  │        ┌──────────────────┐
+│             │        │              │─Image─▶│  Video Model     │
 └─────────────┘        └──────────────┘        └──────────────────┘
 ```
+
+---
+
+## 🤝 Contributing & Community
+
+We welcome contributions! Please review our [Contributing Guidelines](CONTRIBUTING.md) and our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ---
 

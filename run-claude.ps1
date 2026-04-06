@@ -20,8 +20,11 @@ if (Test-Path $envFile) {
     exit 1
 }
 
-# Configure OpenRouter
-$env:ANTHROPIC_BASE_URL = "https://openrouter.ai/api"
+# Configure OpenRouter and Proxy
+$proxyProcess = Start-Process node -ArgumentList (Join-Path $PSScriptRoot "proxy.js") -PassThru -NoNewWindow
+Start-Sleep -Seconds 1
+
+$env:ANTHROPIC_BASE_URL = "http://127.0.0.1:3000"
 $env:ANTHROPIC_AUTH_TOKEN = $env:OPENROUTER_API_KEY
 $env:ANTHROPIC_API_KEY = ""
 $env:ANTHROPIC_DEFAULT_OPUS_MODEL = $env:CLAUDE_MODEL
@@ -36,4 +39,10 @@ Write-Host "  ========================" -ForegroundColor DarkGray
 Write-Host ""
 
 # Launch Claude Code
-npx claude $args
+try {
+    npx claude $args
+} finally {
+    if ($proxyProcess -and !$proxyProcess.HasExited) {
+        Stop-Process -Id $proxyProcess.Id -Force
+    }
+}
