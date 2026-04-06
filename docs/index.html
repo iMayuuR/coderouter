@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CodeRouter — Claude Code with Any Model &amp; 200+ Skills</title>
-  <meta name="description" content="Run Claude Code with OpenRouter: 200+ models, smart vision routing, 200+ global skills, and MCP — no Anthropic account required." />
-  <meta name="keywords" content="Claude Code, OpenRouter, AI coding agent, free models, skills, MCP, GPT, Gemini, Llama" />
+  <meta name="description"
+    content="Run Claude Code with OpenRouter: 200+ models, smart vision routing, 200+ global skills, and MCP — no Anthropic account required." />
+  <meta name="keywords"
+    content="Claude Code, OpenRouter, AI coding agent, free models, skills, MCP, GPT, Gemini, Llama" />
   <meta name="author" content="CodeRouter Contributors" />
   <meta property="og:title" content="CodeRouter — Any Model, One Agent" />
-  <meta property="og:description" content="Claude Code + OpenRouter: hundreds of models, vision routing, bundled skills, global setup." />
+  <meta property="og:description"
+    content="Claude Code + OpenRouter: hundreds of models, vision routing, bundled skills, global setup." />
   <meta property="og:image" content="assets/logo.png" />
   <meta property="og:type" content="website" />
   <meta name="theme-color" content="#4f46e5" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
   <div class="ambient-glow ambient-glow--1" aria-hidden="true"></div>
@@ -33,9 +38,11 @@
         <a href="#skills">Skills</a>
         <a href="#models">Models</a>
         <a href="#how-it-works">How it works</a>
-        <a href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer" class="nav-cta">Get API key</a>
+        <a href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer" class="nav-cta">Get API
+          key</a>
       </div>
-      <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+      <button type="button" class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false"
+        aria-controls="navLinks">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -51,12 +58,18 @@
           <span class="gradient-text">any AI model</span>
         </h1>
         <p class="hero-lead">
-          A local OpenRouter proxy and one-shot global setup: <strong>200+ models</strong>, <strong>smart vision routing</strong>, <strong>200+ agentic skills</strong>, and MCP integrations — use an OpenRouter key, no Anthropic account required.
+          A local OpenRouter proxy and one-shot global setup: <strong>200+ models</strong>, <strong>smart vision
+            routing</strong>, <strong>200+ agentic skills</strong>, and MCP integrations — use an OpenRouter key, no
+          Anthropic account required.
         </p>
         <div class="hero-buttons">
           <a href="#quickstart" class="btn btn-primary">Quick start</a>
-          <a href="https://github.com/iMayuuR/coderouter" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577V20.58c-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.082-.73.082-.73 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.3 1.23A11.5 11.5 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.624-5.48 5.92.43.372.823 1.102.823 2.222v3.293c0 .322.218.694.825.576C20.565 21.796 24 17.298 24 12 24 5.37 18.627 0 12 0z"/></svg>
+          <a href="https://github.com/iMayuuR/coderouter" target="_blank" rel="noopener noreferrer"
+            class="btn btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577V20.58c-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.082-.73.082-.73 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.93 0-1.31.468-2.38 1.235-3.22-.123-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.3 1.23A11.5 11.5 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.233 1.91 1.233 3.22 0 4.61-2.807 5.624-5.48 5.92.43.372.823 1.102.823 2.222v3.293c0 .322.218.694.825.576C20.565 21.796 24 17.298 24 12 24 5.37 18.627 0 12 0z" />
+            </svg>
             GitHub
           </a>
         </div>
@@ -87,7 +100,10 @@
       <div class="section-header reveal">
         <span class="badge">Features</span>
         <h2>Why <span class="gradient-text">CodeRouter</span>?</h2>
-        <p class="features-lead"><strong>Same Claude Code workflow</strong> — <strong>any model you choose</strong> behind it. One OpenRouter key, a tiny local proxy (text + smart vision routing), global skills and MCP, secrets in <code>.env</code>. Swap GPT, Gemini, Llama, or free tiers without changing how you work in the terminal.</p>
+        <p class="features-lead"><strong>Same Claude Code workflow</strong> — <strong>any model you choose</strong>
+          behind it. One OpenRouter key, a tiny local proxy (text + smart vision routing), global skills and MCP,
+          secrets in <code>.env</code>. Swap GPT, Gemini, Llama, or free tiers without changing how you work in the
+          terminal.</p>
       </div>
       <div class="features-grid">
         <div class="feature-card reveal">
@@ -98,27 +114,32 @@
         <div class="feature-card reveal">
           <div class="feature-icon" aria-hidden="true">👁️</div>
           <h3>Smart vision proxy</h3>
-          <p>Detects images in prompts and routes to a vision-capable model (e.g. Qwen VL) so the terminal agent does not break on multimodal input.</p>
+          <p>Detects images in prompts and routes to a vision-capable model (e.g. Qwen VL) so the terminal agent does
+            not break on multimodal input.</p>
         </div>
         <div class="feature-card reveal">
           <div class="feature-icon" aria-hidden="true">🧠</div>
           <h3>200+ agentic skills</h3>
-          <p>Brainstorming, TDD, debugging, code review, UI/UX, browser automation, security — installed globally with the setup scripts.</p>
+          <p>Brainstorming, TDD, debugging, code review, UI/UX, browser automation, security — installed globally with
+            the setup scripts.</p>
         </div>
         <div class="feature-card reveal">
           <div class="feature-icon" aria-hidden="true">🔌</div>
           <h3>MCP integrations</h3>
-          <p>Setup can wire MCP servers (for example <code>@21st-dev/magic</code>) so tools follow you across projects.</p>
+          <p>Setup can wire MCP servers (for example <code>@21st-dev/magic</code>) so tools follow you across projects.
+          </p>
         </div>
         <div class="feature-card reveal">
           <div class="feature-icon" aria-hidden="true">🌍</div>
           <h3>Global <code>claude</code></h3>
-          <p>After <code>setup-agent.ps1</code> or <code>install-global-skills.js</code>, run <code>claude</code> from any folder — after a full terminal restart.</p>
+          <p>After <code>setup-agent.ps1</code> or <code>install-global-skills.js</code>, run <code>claude</code> from
+            any folder — after a full terminal restart.</p>
         </div>
         <div class="feature-card reveal">
           <div class="feature-icon" aria-hidden="true">🆓</div>
           <h3>Free tiers</h3>
-          <p>Many strong free models on OpenRouter; pay only for what you route. Keys live in <code>.env</code> (gitignored).</p>
+          <p>Many strong free models on OpenRouter; pay only for what you route. Keys live in <code>.env</code>
+            (gitignored).</p>
         </div>
       </div>
     </div>
@@ -133,47 +154,47 @@
       </div>
       <div class="reveal comparison-shell">
         <div class="table-wrap table-wrap--centered">
-        <table class="comparison-table">
-          <thead>
-            <tr>
-              <th>Capability</th>
-              <th>Direct Anthropic</th>
-              <th>CodeRouter</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Models</td>
-              <td>Claude family</td>
-              <td><span class="check">✓</span> 200+ via OpenRouter</td>
-            </tr>
-            <tr>
-              <td>Free model options</td>
-              <td><span class="cross">✕</span></td>
-              <td><span class="check">✓</span> Many free endpoints</td>
-            </tr>
-            <tr>
-              <td>Anthropic account</td>
-              <td>Required</td>
-              <td><span class="check">✓</span> Not required</td>
-            </tr>
-            <tr>
-              <td>Vision routing</td>
-              <td>Native to Claude</td>
-              <td><span class="check">✓</span> Smart proxy to vision models</td>
-            </tr>
-            <tr>
-              <td>Bundled skills + MCP</td>
-              <td>Bring your own</td>
-              <td><span class="check">✓</span> One-shot global install</td>
-            </tr>
-            <tr>
-              <td>Provider failover</td>
-              <td><span class="cross">✕</span></td>
-              <td><span class="check">✓</span> OpenRouter routing</td>
-            </tr>
-          </tbody>
-        </table>
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th>Capability</th>
+                <th>Direct Anthropic</th>
+                <th>CodeRouter</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Models</td>
+                <td>Claude family</td>
+                <td><span class="check">✓</span> 200+ via OpenRouter</td>
+              </tr>
+              <tr>
+                <td>Free model options</td>
+                <td><span class="cross">✕</span></td>
+                <td><span class="check">✓</span> Many free endpoints</td>
+              </tr>
+              <tr>
+                <td>Anthropic account</td>
+                <td>Required</td>
+                <td><span class="check">✓</span> Not required</td>
+              </tr>
+              <tr>
+                <td>Vision routing</td>
+                <td>Native to Claude</td>
+                <td><span class="check">✓</span> Smart proxy to vision models</td>
+              </tr>
+              <tr>
+                <td>Bundled skills + MCP</td>
+                <td>Bring your own</td>
+                <td><span class="check">✓</span> One-shot global install</td>
+              </tr>
+              <tr>
+                <td>Provider failover</td>
+                <td><span class="cross">✕</span></td>
+                <td><span class="check">✓</span> OpenRouter routing</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -184,67 +205,76 @@
       <div class="section-header reveal">
         <span class="badge">Quick start</span>
         <h2>~60 seconds to <span class="gradient-text">Claude Code</span></h2>
-        <p>Matches <a href="https://github.com/iMayuuR/coderouter/blob/main/QUICKSTART.md" target="_blank" rel="noopener noreferrer">QUICKSTART.md</a> — five beats from clone to a global <code>claude</code> command.</p>
+        <p>Matches <a href="https://github.com/iMayuuR/coderouter/blob/main/QUICKSTART.md" target="_blank"
+            rel="noopener noreferrer">QUICKSTART.md</a> — five beats from clone to a global <code>claude</code> command.
+        </p>
       </div>
 
       <div class="quickstart-track reveal">
-      <div class="steps steps--five">
-        <div class="step-card reveal">
-          <div class="step-number">1</div>
-          <h3>Clone &amp; install</h3>
-          <div class="step-commands">
-            <code class="step-cmd">git clone https://github.com/iMayuuR/coderouter.git</code>
-            <code class="step-cmd">cd coderouter</code>
-            <code class="step-cmd">npm install</code>
+        <div class="steps steps--five">
+          <div class="step-card reveal">
+            <div class="step-number">1</div>
+            <h3>Clone &amp; install</h3>
+            <div class="step-commands">
+              <code class="step-cmd">git clone https://github.com/iMayuuR/coderouter.git</code>
+              <code class="step-cmd">cd coderouter</code>
+              <code class="step-cmd">npm install</code>
+            </div>
+          </div>
+          <div class="step-card reveal">
+            <div class="step-number">2</div>
+            <h3>Create <code>.env</code></h3>
+            <div class="step-commands">
+              <span class="step-label">Windows</span>
+              <code class="step-cmd">copy .env.example .env</code>
+              <span class="step-label">macOS / Linux</span>
+              <code class="step-cmd">cp .env.example .env</code>
+              <p class="step-note">Set <code>OPENROUTER_API_KEY</code> and <code>CLAUDE_MODEL</code> (e.g.
+                <code>openrouter/free</code>).</p>
+            </div>
+          </div>
+          <div class="step-card reveal">
+            <div class="step-number">3</div>
+            <h3>One-shot setup</h3>
+            <div class="step-commands">
+              <span class="step-label">Windows (PowerShell)</span>
+              <code class="step-cmd">.\setup-agent.ps1</code>
+              <span class="step-label">Any OS</span>
+              <code class="step-cmd">node install-global-skills.js</code>
+              <p class="step-note">Proxy alias, skills, MCP — global.</p>
+            </div>
+          </div>
+          <div class="step-card reveal">
+            <div class="step-number">4</div>
+            <h3>Restart terminal</h3>
+            <p class="step-note step-note--strong">Close <strong>every</strong> terminal window, open a new one so your
+              shell profile reloads.</p>
+          </div>
+          <div class="step-card reveal">
+            <div class="step-number">5</div>
+            <h3>Run anywhere</h3>
+            <div class="step-commands">
+              <code class="step-cmd">coderouter</code>
+              <p class="step-note">From any folder, after step 4.</p>
+            </div>
           </div>
         </div>
-        <div class="step-card reveal">
-          <div class="step-number">2</div>
-          <h3>Create <code>.env</code></h3>
-          <div class="step-commands">
-            <span class="step-label">Windows</span>
-            <code class="step-cmd">copy .env.example .env</code>
-            <span class="step-label">macOS / Linux</span>
-            <code class="step-cmd">cp .env.example .env</code>
-            <p class="step-note">Set <code>OPENROUTER_API_KEY</code> and <code>CLAUDE_MODEL</code> (e.g. <code>openrouter/free</code>).</p>
-          </div>
-        </div>
-        <div class="step-card reveal">
-          <div class="step-number">3</div>
-          <h3>One-shot setup</h3>
-          <div class="step-commands">
-            <span class="step-label">Windows (PowerShell)</span>
-            <code class="step-cmd">.\setup-agent.ps1</code>
-            <span class="step-label">Any OS</span>
-            <code class="step-cmd">node install-global-skills.js</code>
-            <p class="step-note">Proxy alias, skills, MCP — global.</p>
-          </div>
-        </div>
-        <div class="step-card reveal">
-          <div class="step-number">4</div>
-          <h3>Restart terminal</h3>
-          <p class="step-note step-note--strong">Close <strong>every</strong> terminal window, open a new one so your shell profile reloads.</p>
-        </div>
-        <div class="step-card reveal">
-          <div class="step-number">5</div>
-          <h3>Run anywhere</h3>
-          <div class="step-commands">
-            <code class="step-cmd">claude</code>
-            <p class="step-note">From any folder, after step 4.</p>
-          </div>
-        </div>
-      </div>
 
-      <div class="restart-callout">
-        <span aria-hidden="true">⚠️</span>
-        <p><strong>Restart required.</strong> If <code>claude</code> is not found, you skipped a full terminal restart — close every window, open a fresh one, try again.</p>
-      </div>
+        <div class="restart-callout">
+          <span aria-hidden="true">⚠️</span>
+          <p><strong>Restart required.</strong> If <code>claude</code> is not found, you skipped a full terminal restart
+            — close every window, open a fresh one, try again.</p>
+        </div>
       </div>
 
       <div class="ai-prompt-panel reveal">
         <h3>Let an AI agent run the setup</h3>
         <p class="ai-prompt-lead">
-          Copy the prompt below and paste it into Cursor, Claude, Windsurf, or any coding agent. It mirrors QUICKSTART: clone (or use an existing repo), <code>npm install</code>, create <code>.env</code> from the example with your OpenRouter key and model, run <code>.\setup-agent.ps1</code> on Windows or <code>node install-global-skills.js</code> everywhere else, then insist on a <strong>full terminal restart</strong> before using <code>claude</code>.
+          Copy the prompt below and paste it into Cursor, Claude, Windsurf, or any coding agent. It mirrors QUICKSTART:
+          clone (or use an existing repo), <code>npm install</code>, create <code>.env</code> from the example with your
+          OpenRouter key and model, run <code>.\setup-agent.ps1</code> on Windows or
+          <code>node install-global-skills.js</code> everywhere else, then insist on a <strong>full terminal
+            restart</strong> before using <code>claude</code>.
         </p>
         <div class="ai-prompt-actions">
           <button type="button" class="btn btn-primary" id="copyAgentPrompt">
@@ -257,19 +287,24 @@
       <div class="code-section code-section--pair reveal">
         <div class="code-desc code-desc--config code-panel">
           <h3>Optional: <code>ai-agent-config.json</code></h3>
-          <p class="code-desc-intro">Agents can read this file for your key and model. Edit <code>user_preferences</code>, then share the file plus the copied setup prompt.</p>
+          <p class="code-desc-intro">Agents can read this file for your key and model. Edit
+            <code>user_preferences</code>, then share the file plus the copied setup prompt.</p>
           <ol class="config-checklist">
             <li>
               <span class="config-checklist-title">Credentials</span>
-              <span class="config-checklist-body">Set <code>api_key</code> and <code>model</code> (example: <code>openrouter/free</code>).</span>
+              <span class="config-checklist-body">Set <code>api_key</code> and <code>model</code> (example:
+                <code>openrouter/free</code>).</span>
             </li>
             <li>
               <span class="config-checklist-title">Install &amp; env</span>
-              <span class="config-checklist-body">Agent runs <code>npm install</code> and creates <code>.env</code> from <code>.env.example</code>.</span>
+              <span class="config-checklist-body">Agent runs <code>npm install</code> and creates <code>.env</code> from
+                <code>.env.example</code>.</span>
             </li>
             <li>
               <span class="config-checklist-title">How you launch</span>
-              <span class="config-checklist-body">Per-session: Windows <code class="code-nowrap">.\run-claude.ps1</code> · Unix <code class="code-nowrap">./run-claude.sh</code>. After global setup + restart: use <code>claude</code> anywhere.</span>
+              <span class="config-checklist-body">Per-session: Windows <code class="code-nowrap">.\run-claude.ps1</code>
+                · Unix <code class="code-nowrap">./run-claude.sh</code>. After global setup + restart: use
+                <code>claude</code> anywhere.</span>
             </li>
           </ol>
         </div>
@@ -281,7 +316,7 @@
             <span class="code-filename">ai-agent-config.json</span>
           </div>
           <div class="code-body">
-<pre>{
+            <pre>{
   <span class="hl-key">"user_preferences"</span>: {
     <span class="hl-key">"api_key"</span>: <span class="hl-str">"sk-or-v1-..."</span>,
     <span class="hl-key">"model"</span>: <span class="hl-str">"openrouter/free"</span>,
@@ -335,7 +370,8 @@
         </div>
       </div>
       <p class="skills-tip reveal">
-        <strong>Tip:</strong> If <code>/skills</code> shows “0”, it may be a CLI display quirk — ask for a skill by name anyway (see QUICKSTART).
+        <strong>Tip:</strong> If <code>/skills</code> shows “0”, it may be a CLI display quirk — ask for a skill by name
+        anyway (see QUICKSTART).
       </p>
     </div>
   </section>
@@ -392,7 +428,8 @@
         </div>
       </div>
       <p class="models-footnote reveal">
-        Full catalog: <a href="https://openrouter.ai/models" target="_blank" rel="noopener noreferrer">openrouter.ai/models</a>
+        Full catalog: <a href="https://openrouter.ai/models" target="_blank"
+          rel="noopener noreferrer">openrouter.ai/models</a>
       </p>
       <p class="models-disclaimer reveal">
         Free tiers may use prompts for training. Do not send secrets or proprietary code you are not allowed to share.
@@ -436,17 +473,20 @@
         <div class="step-card">
           <div class="step-number">1</div>
           <h3>Base URL override</h3>
-          <p>Launchers set <code>ANTHROPIC_BASE_URL</code> (and related env) so Claude Code talks to the proxy instead of Anthropic directly.</p>
+          <p>Launchers set <code>ANTHROPIC_BASE_URL</code> (and related env) so Claude Code talks to the proxy instead
+            of Anthropic directly.</p>
         </div>
         <div class="step-card">
           <div class="step-number">2</div>
           <h3>Compatible API</h3>
-          <p>OpenRouter’s Anthropic-shaped endpoint keeps the Claude Code client happy while the real model ID lives in your config.</p>
+          <p>OpenRouter’s Anthropic-shaped endpoint keeps the Claude Code client happy while the real model ID lives in
+            your config.</p>
         </div>
         <div class="step-card">
           <div class="step-number">3</div>
           <h3>Failover</h3>
-          <p>OpenRouter picks healthy providers; you switch models by editing <code>.env</code>, not by reinstalling the agent.</p>
+          <p>OpenRouter picks healthy providers; you switch models by editing <code>.env</code>, not by reinstalling the
+            agent.</p>
         </div>
       </div>
     </div>
@@ -456,10 +496,12 @@
     <div class="container">
       <div class="cta-box reveal">
         <h2>Ready to <span class="gradient-text">route your agent</span>?</h2>
-        <p>Clone the repo, paste your OpenRouter key, run the one-shot setup, restart the terminal, type <code>claude</code>.</p>
+        <p>Clone the repo, paste your OpenRouter key, run the one-shot setup, restart the terminal, type
+          <code>claude</code>.</p>
         <div class="hero-buttons">
           <a href="#quickstart" class="btn btn-primary">Start here</a>
-          <a href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">OpenRouter keys</a>
+          <a href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer"
+            class="btn btn-secondary">OpenRouter keys</a>
         </div>
       </div>
     </div>
@@ -473,7 +515,8 @@
       </div>
       <nav class="footer-nav" aria-label="Footer">
         <a href="https://github.com/iMayuuR/coderouter" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="https://github.com/iMayuuR/coderouter/blob/main/QUICKSTART.md" target="_blank" rel="noopener noreferrer">Quickstart</a>
+        <a href="https://github.com/iMayuuR/coderouter/blob/main/QUICKSTART.md" target="_blank"
+          rel="noopener noreferrer">Quickstart</a>
         <a href="https://openrouter.ai" target="_blank" rel="noopener noreferrer">OpenRouter</a>
         <a href="#quickstart">Docs</a>
       </nav>
@@ -577,4 +620,5 @@
   </script>
 
 </body>
+
 </html>

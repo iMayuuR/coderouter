@@ -35,6 +35,8 @@ Run the automation script to install the global alias, proxy, and all 200+ skill
 ### 🚀 Launch!
 From **any folder** on your computer, just type:
 ```bash
+coderouter
+or
 claude
 ```
 

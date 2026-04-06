@@ -47,7 +47,7 @@ The easiest way to get started:
 4. **⚠️ RESTART YOUR TERMINAL**:
    Close all terminal windows and reopen.
 
-5. **Type `claude` from ANY folder!**
+5. **Type `coderouter or claude` from ANY folder!**
 
 > See the [QUICKSTART.md](QUICKSTART.md) for more details.
 
