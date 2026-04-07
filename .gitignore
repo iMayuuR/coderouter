@@ -1,8 +1,17 @@
 # Dependencies
 node_modules/
 
-# Environment variables (contains API keys)
+# Environment variables (contains API keys — never commit real secrets)
 .env
+.env.local
+.env.*.local
+.env.production
+.env.development
+install-global-skills.local.env
+*.env.backup
+
+# NOTE: install-global-skills.js must stay tracked — it is the setup script for every clone.
+#       Put secrets only in .env (gitignored). Copy from install-global-skills.example.env.
 
 # OS files
 .DS_Store
@@ -19,6 +28,10 @@ desktop.ini
 # Logs
 *.log
 npm-debug.log*
+proxy-debug.log
+
+# If you store real keys in a copy of ai-agent-config, use a local filename and keep it ignored:
+# ai-agent-config.local.json
 
 # CodeRouter Global Files
 .coderouter/

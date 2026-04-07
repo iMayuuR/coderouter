@@ -126,14 +126,17 @@
         <div class="feature-card reveal">
           <div class="feature-icon" aria-hidden="true">🔌</div>
           <h3>MCP integrations</h3>
-          <p>Setup can wire MCP servers (for example <code>@21st-dev/magic</code>) so tools follow you across projects.
-          </p>
+          <p>Optional <code>@21st-dev/magic</code>: with <code>MAGIC_API_KEY</code> in <code>.env</code>, the installer
+            adds <strong>user-scope</strong> MCP under <code>~/.claude.json</code> → top-level
+            <code>mcpServers</code> (all folders). Run Claude Code once first so that file exists; restart the app after
+            install.</p>
         </div>
         <div class="feature-card reveal">
           <div class="feature-icon" aria-hidden="true">🌍</div>
-          <h3>Global <code>claude</code></h3>
-          <p>After <code>setup-agent.ps1</code> or <code>install-global-skills.js</code>, run <code>claude</code> from
-            any folder — after a full terminal restart.</p>
+          <h3>Global <code>claude</code> / <code>coderouter</code></h3>
+          <p>After <code>install-global-skills.js</code> (or <code>setup-agent.ps1</code> with
+            <code>ai-agent-config.json</code>), run <code>claude</code> or <code>coderouter</code> from any folder —
+            after a full terminal restart.</p>
         </div>
         <div class="feature-card reveal">
           <div class="feature-icon" aria-hidden="true">🆓</div>
@@ -208,62 +211,108 @@
         <p>Matches <a href="https://github.com/iMayuuR/coderouter/blob/main/QUICKSTART.md" target="_blank"
             rel="noopener noreferrer">QUICKSTART.md</a> — five beats from clone to a global <code>claude</code> command.
         </p>
+        <p class="quickstart-prereq reveal"><strong>Before you start:</strong> Install <a
+            href="https://nodejs.org/" target="_blank" rel="noopener noreferrer">Node.js</a> (LTS, includes
+          <code>npm</code>). Install <a href="https://docs.anthropic.com/en/docs/claude-code/setup" target="_blank"
+            rel="noopener noreferrer">Claude Code</a> (<code>npm install -g @anthropic-ai/claude-code</code> or the
+          official installer). You need an <a href="https://openrouter.ai/settings/keys" target="_blank"
+            rel="noopener noreferrer">OpenRouter API key</a>.</p>
       </div>
 
       <div class="quickstart-track reveal">
-        <div class="steps steps--five">
+        <div class="steps steps--quickstart">
           <div class="step-card reveal">
-            <div class="step-number">1</div>
-            <h3>Clone &amp; install</h3>
-            <div class="step-commands">
-              <code class="step-cmd">git clone https://github.com/iMayuuR/coderouter.git</code>
-              <code class="step-cmd">cd coderouter</code>
-              <code class="step-cmd">npm install</code>
+            <div class="step-card__header">
+              <span class="step-icon" aria-hidden="true">📥</span>
+              <span class="step-pill">1</span>
+              <h3>Clone &amp; install</h3>
+            </div>
+            <div class="step-card__body">
+              <div class="step-commands">
+                <code class="step-cmd">git clone https://github.com/iMayuuR/coderouter.git</code>
+                <code class="step-cmd">cd coderouter</code>
+                <code class="step-cmd">npm install</code>
+              </div>
             </div>
           </div>
           <div class="step-card reveal">
-            <div class="step-number">2</div>
-            <h3>Create <code>.env</code></h3>
-            <div class="step-commands">
-              <span class="step-label">Windows</span>
-              <code class="step-cmd">copy .env.example .env</code>
-              <span class="step-label">macOS / Linux</span>
-              <code class="step-cmd">cp .env.example .env</code>
+            <div class="step-card__header">
+              <span class="step-icon" aria-hidden="true">📄</span>
+              <span class="step-pill">2</span>
+              <h3>Create <code>.env</code></h3>
+            </div>
+            <div class="step-card__body">
+              <div class="step-commands step-commands--cols">
+                <div class="step-command-group">
+                  <span class="step-label">Windows</span>
+                  <code class="step-cmd">copy .env.example .env</code>
+                  <code class="step-cmd">copy install-global-skills.example.env .env</code>
+                </div>
+                <div class="step-command-group">
+                  <span class="step-label">macOS / Linux</span>
+                  <code class="step-cmd">cp .env.example .env</code>
+                  <code class="step-cmd">cp install-global-skills.example.env .env</code>
+                </div>
+              </div>
               <p class="step-note">Set <code>OPENROUTER_API_KEY</code> and <code>CLAUDE_MODEL</code> (e.g.
-                <code>openrouter/free</code>).</p>
+                <code>openrouter/free</code>). Optional: <code>MAGIC_API_KEY</code> for @21st-dev/magic — see
+                <a href="https://github.com/iMayuuR/coderouter/blob/main/QUICKSTART.md"
+                  target="_blank" rel="noopener noreferrer">QUICKSTART.md</a>. Never commit <code>.env</code>.</p>
             </div>
           </div>
           <div class="step-card reveal">
-            <div class="step-number">3</div>
-            <h3>One-shot setup</h3>
-            <div class="step-commands">
-              <span class="step-label">Windows (PowerShell)</span>
-              <code class="step-cmd">.\setup-agent.ps1</code>
-              <span class="step-label">Any OS</span>
-              <code class="step-cmd">node install-global-skills.js</code>
-              <p class="step-note">Proxy alias, skills, MCP — global.</p>
+            <div class="step-card__header">
+              <span class="step-icon" aria-hidden="true">⚡</span>
+              <span class="step-pill">3</span>
+              <h3>One-shot setup</h3>
+            </div>
+            <div class="step-card__body">
+              <div class="step-commands">
+                <span class="step-label">Recommended (any OS)</span>
+                <code class="step-cmd">node install-global-skills.js</code>
+                <p class="step-note step-note--left">Skills, PATH, aliases, and Windows user env always apply. Optional MCP
+                  (<code>MAGIC_API_KEY</code>): user-scope <code>~/.claude.json</code> → <code>mcpServers</code> — open
+                  Claude Code once if that file is missing, then re-run this script. Restart Claude after MCP changes.</p>
+                <span class="step-label">Windows only (optional)</span>
+                <code class="step-cmd">.\setup-agent.ps1</code>
+                <p class="step-note step-note--left">Needs <code>ai-agent-config.json</code> with <code>user_preferences</code>;
+                  runs <code>npm install</code> and the same global installer.</p>
+              </div>
             </div>
           </div>
           <div class="step-card reveal">
-            <div class="step-number">4</div>
-            <h3>Restart terminal</h3>
-            <p class="step-note step-note--strong">Close <strong>every</strong> terminal window, open a new one so your
-              shell profile reloads.</p>
+            <div class="step-card__header">
+              <span class="step-icon" aria-hidden="true">🔄</span>
+              <span class="step-pill">4</span>
+              <h3>Restart terminal</h3>
+            </div>
+            <div class="step-card__body">
+              <p class="step-note step-note--left step-note--hero">Close <strong>every</strong> terminal window, then open a
+                new one so your shell profile and PATH reload.</p>
+            </div>
           </div>
-          <div class="step-card reveal">
-            <div class="step-number">5</div>
-            <h3>Run anywhere</h3>
-            <div class="step-commands">
-              <code class="step-cmd">coderouter</code>
-              <p class="step-note">From any folder, after step 4.</p>
+          <div class="step-card reveal step-card--launch">
+            <div class="step-card__header">
+              <span class="step-icon" aria-hidden="true">🚀</span>
+              <span class="step-pill">5</span>
+              <h3>Run anywhere</h3>
+            </div>
+            <div class="step-card__body">
+              <div class="step-launch-row">
+                <code class="step-cmd step-cmd--highlight">claude</code>
+                <span class="step-launch-or">or</span>
+                <code class="step-cmd step-cmd--highlight">coderouter</code>
+              </div>
+              <p class="step-note step-note--left">CodeRouter launcher (proxy + OpenRouter). In this repo:
+                <code class="code-nowrap">npm run claude</code> — do not use plain <code>npx claude</code>; it skips the proxy.</p>
             </div>
           </div>
         </div>
 
         <div class="restart-callout">
-          <span aria-hidden="true">⚠️</span>
-          <p><strong>Restart required.</strong> If <code>claude</code> is not found, you skipped a full terminal restart
-            — close every window, open a fresh one, try again.</p>
+          <div class="restart-callout__icon" aria-hidden="true">!</div>
+          <p><strong>Restart required.</strong> If <code>claude</code> / <code>coderouter</code> is not found, you
+            skipped a full terminal restart — close every window, open a fresh one, try again.</p>
         </div>
       </div>
 
@@ -271,10 +320,11 @@
         <h3>Let an AI agent run the setup</h3>
         <p class="ai-prompt-lead">
           Copy the prompt below and paste it into Cursor, Claude, Windsurf, or any coding agent. It mirrors QUICKSTART:
-          clone (or use an existing repo), <code>npm install</code>, create <code>.env</code> from the example with your
-          OpenRouter key and model, run <code>.\setup-agent.ps1</code> on Windows or
-          <code>node install-global-skills.js</code> everywhere else, then insist on a <strong>full terminal
-            restart</strong> before using <code>claude</code>.
+          clone (or use an existing repo), <code>npm install</code>, create <code>.env</code> from
+          <code>.env.example</code> (or <code>install-global-skills.example.env</code>) with your OpenRouter key and
+          model, run <code>node install-global-skills.js</code> (or <code>.\setup-agent.ps1</code> on Windows only if
+          you use <code>ai-agent-config.json</code>), then insist on a <strong>full terminal restart</strong> before
+          using <code>claude</code> or <code>coderouter</code>.
         </p>
         <div class="ai-prompt-actions">
           <button type="button" class="btn btn-primary" id="copyAgentPrompt">
@@ -304,7 +354,7 @@
               <span class="config-checklist-title">How you launch</span>
               <span class="config-checklist-body">Per-session: Windows <code class="code-nowrap">.\run-claude.ps1</code>
                 · Unix <code class="code-nowrap">./run-claude.sh</code>. After global setup + restart: use
-                <code>claude</code> anywhere.</span>
+                <code>claude</code> or <code>coderouter</code> anywhere.</span>
             </li>
           </ol>
         </div>
@@ -497,7 +547,7 @@
       <div class="cta-box reveal">
         <h2>Ready to <span class="gradient-text">route your agent</span>?</h2>
         <p>Clone the repo, paste your OpenRouter key, run the one-shot setup, restart the terminal, type
-          <code>claude</code>.</p>
+          <code>claude</code> or <code>coderouter</code>.</p>
         <div class="hero-buttons">
           <a href="#quickstart" class="btn btn-primary">Start here</a>
           <a href="https://openrouter.ai/settings/keys" target="_blank" rel="noopener noreferrer"
@@ -575,35 +625,59 @@
         });
       });
 
+      /* Agent prompt: must match QUICKSTART.md § "Agent setup prompt (IDE AI agents)" — edit both when changing. */
       var AGENT_SETUP_PROMPT = [
-        'Set up CodeRouter on my machine using the official quickstart (https://github.com/iMayuuR/coderouter).',
+        '=== CodeRouter install (run commands; do not only summarize) ===',
+        'Official repo: https://github.com/iMayuuR/coderouter — canonical copy: QUICKSTART.md § Agent setup prompt (keep in sync with docs/index.html).',
         '',
-        'Repository: https://github.com/iMayuuR/coderouter.git',
+        'GOAL',
+        'Install CodeRouter so Claude Code uses OpenRouter through the local proxy: global commands `claude` and `coderouter` (same launcher), or `npm run claude` from the repo.',
         '',
-        '1) Clone and install (skip clone if I already have the repo):',
-        '   git clone https://github.com/iMayuuR/coderouter.git',
-        '   cd coderouter',
-        '   npm install',
+        'PREREQUISITES (check first; install if missing)',
+        '- Node.js LTS + npm',
+        '- Claude Code CLI (https://docs.anthropic.com/en/docs/claude-code/setup) — e.g. `npm install -g @anthropic-ai/claude-code` or Anthropic native installer',
+        '- OpenRouter API key: https://openrouter.ai/settings/keys',
         '',
-        '2) Configure API key — create .env from .env.example:',
-        '   Windows: copy .env.example .env',
-        '   macOS/Linux: cp .env.example .env',
-        '   Set OPENROUTER_API_KEY to my key (ask me if missing).',
-        '   Set CLAUDE_MODEL — default suggestion: openrouter/free (or use the model in ai-agent-config.json if I provide that file).',
+        'DEFINITIONS',
+        '- REPO ROOT = folder that contains package.json, install-global-skills.js, run-claude.ps1, proxy.js. Every shell command below uses REPO ROOT as cwd unless stated otherwise.',
         '',
-        '3) One-shot global setup (choose the right command for my OS):',
-        '   Windows PowerShell: .\\setup-agent.ps1',
-        '   Any OS: node install-global-skills.js',
+        'RULES',
+        '- Never git-add or commit .env. Never echo full API keys back unless the user explicitly needs them.',
+        '- Inside this repo, do NOT use plain `npx claude` for normal runs — it bypasses the CodeRouter proxy. Use `npm run claude` or `npm run coderouter` from REPO ROOT, or after setup use global `claude` / `coderouter`.',
         '',
-        '4) CRITICAL: Tell me to fully close every terminal window and open a new one so my shell profile reloads and the `claude` command is on PATH.',
+        'STEP 1 — Source + dependencies',
+        '- If the coderouter tree is not present: `git clone https://github.com/iMayuuR/coderouter.git` then `cd coderouter`. If git unavailable, download the repo ZIP from GitHub and extract, then `cd` into the extracted folder.',
+        '- From REPO ROOT: `npm install`',
         '',
-        '5) After restart, from any folder I should run: claude',
+        'STEP 2 — Secrets file (.env at REPO ROOT)',
+        '- Copy a template to `.env`:',
+        '  CMD:        copy .env.example .env',
+        '  PowerShell: Copy-Item .env.example .env',
+        '  macOS/Linux: cp .env.example .env',
+        '  (Equivalent alternative template: install-global-skills.example.env → copy to .env the same way.)',
+        '- Edit `.env`: set OPENROUTER_API_KEY=<ask user if unknown>. Set CLAUDE_MODEL=openrouter/free unless the user names another OpenRouter model id.',
+        '- If `ai-agent-config.json` exists in REPO ROOT with user_preferences: map api_key → OPENROUTER_API_KEY and model → CLAUDE_MODEL in `.env` before STEP 3.',
         '',
-        '6) Skills: 200+ global skills are installed by the script. If the CLI /skills UI shows 0, that can be a display bug — skills still work when invoked by name.',
+        'STEP 3 — Global installer (required once per machine / after moving the repo folder)',
+        '- From REPO ROOT: `node install-global-skills.js`',
+        '  This reads `.env`, installs bundled skills under ~/.claude/skills, wires launchers. On Windows it also sets User env and adds ~/.coderouter/bin (claude.cmd + coderouter.cmd) to User PATH; on Unix it adds shell aliases.',
+        '- Windows-only optional path: `.\\setup-agent.ps1` ONLY if `ai-agent-config.json` exists in REPO ROOT (script exits if missing). It runs npm install, merges config into .env, then runs install-global-skills.js. If that JSON file is absent, skip setup-agent.ps1 and use `node install-global-skills.js` only.',
         '',
-        '7) Optional: if I attached ai-agent-config.json, copy api_key and model from user_preferences into .env before running setup.',
+        'STEP 4 — Restart (mandatory for PATH / profile changes)',
+        '- Instruct the user to fully close every terminal tab/window (including IDE integrated terminals), then open a new terminal. Partial reload is not enough.',
         '',
-        'Report what you ran and any errors verbatim.'
+        'STEP 5 — Verify (run after restart)',
+        '- From an arbitrary directory (new shell): `claude` OR `coderouter` — expect CodeRouter banner then Claude Code.',
+        '- If PATH not updated yet: from REPO ROOT run `npm run claude` or `npm run coderouter` (same as run-claude.ps1 / run-claude.sh).',
+        '- Success = no immediate API 400 about context-management on first message; if it appears, confirm launch used run-claude / global launcher, not raw npx claude in repo.',
+        '',
+        'NOTES',
+        '- MAGIC_API_KEY in .env is optional. With it set, `node install-global-skills.js` adds @21st-dev/magic to ~/.claude.json top-level mcpServers (user scope, all projects). ~/.claude.json must exist (run Claude Code once first). Restart Claude Code after MCP changes; verify with `claude mcp list`.',
+        '- If Claude Code UI shows /skills count 0, skills may still load when invoked by name.',
+        '- PowerShell: if scripts are blocked, run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once or call powershell -ExecutionPolicy Bypass -File .\\setup-agent.ps1',
+        '',
+        'DELIVERABLE',
+        'Reply with: (1) exact commands run + cwd for each, (2) full stderr if anything failed, (3) whether `claude`/`coderouter` or `npm run claude` succeeded.'
       ].join('\n');
 
       var btn = document.getElementById('copyAgentPrompt');

@@ -1,5 +1,6 @@
 const http = require('http');
 const https = require('https');
+const zlib = require('zlib');
 
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
@@ -14,8 +15,27 @@ let dynamicVisionModel = null;
 const fs = require('fs');
 const apiKey = (process.env.OPENROUTER_API_KEY || '').trim().replace(/^["'](.*)["']$/, '$1');
 
-// Final debug check to a file (since console is cleared by Claude CLI)
-fs.writeFileSync(path.join(__dirname, 'proxy-debug.log'), `[${new Date().toISOString()}] Started. Key length: ${apiKey.length}\n`);
+const PROXY_DEBUG =
+  process.env.CODEROUTER_PROXY_DEBUG === '1' ||
+  process.env.CODEROUTER_PROXY_DEBUG === 'true';
+const proxyDebugLogPath = path.join(__dirname, 'proxy-debug.log');
+function proxyDebugLog(message) {
+  if (!PROXY_DEBUG) return;
+  try {
+    const line = `[${new Date().toISOString()}] ${message}\n`;
+    fs.appendFileSync(proxyDebugLogPath, line);
+  } catch (_) {
+    /* ignore disk errors */
+  }
+}
+if (PROXY_DEBUG) {
+  try {
+    fs.writeFileSync(
+      proxyDebugLogPath,
+      `[${new Date().toISOString()}] Started. Key length: ${apiKey.length}\n`
+    );
+  } catch (_) {}
+}
 
 if (!apiKey) {
   console.error("❌ ERROR: OPENROUTER_API_KEY is not set in .env");
@@ -75,6 +95,30 @@ function hasImageParam(messages) {
   return false;
 }
 
+/** OpenRouter 400 if any context-management-* beta is present (Anthropic-direct only). */
+function filterAnthropicBetaHeader(raw) {
+  if (raw == null || raw === '') return null;
+  const parts = String(Array.isArray(raw) ? raw.join(',') : raw)
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+  const filtered = parts.filter((p) => !/^context-management-/i.test(p));
+  return filtered.length ? filtered.join(',') : null;
+}
+
+function decompressRequestBody(buffer, contentEncoding) {
+  if (!contentEncoding || !buffer.length) return buffer;
+  const enc = String(contentEncoding).toLowerCase();
+  try {
+    if (enc.includes('gzip')) return zlib.gunzipSync(buffer);
+    if (enc.includes('deflate')) return zlib.inflateSync(buffer);
+    if (enc.includes('br')) return zlib.brotliDecompressSync(buffer);
+  } catch (e) {
+    proxyDebugLog(`decompress failed (${enc}): ${e.message}`);
+  }
+  return buffer;
+}
+
 const server = http.createServer((req, res) => {
   // CORS Headers (just in case Claude Code checks them)
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -96,11 +140,14 @@ const server = http.createServer((req, res) => {
     });
 
     req.on('end', () => {
-      const bodyBuffer = Buffer.concat(bodyChunks);
+      const rawBuffer = Buffer.concat(bodyChunks);
+      const bodyBuffer = decompressRequestBody(rawBuffer, req.headers['content-encoding']);
       let requestBodyStr = bodyBuffer.toString('utf8');
-      
+      let parseOk = false;
+
       try {
         const payload = JSON.parse(requestBodyStr);
+        parseOk = true;
         
         // Smart Routing: Check for images in the messages
         const requiresVision = hasImageParam(payload.messages);
@@ -113,22 +160,71 @@ const server = http.createServer((req, res) => {
           payload.model = defaultModel;
         }
 
-        // STRIP CACHE_CONTROL to prevent OpenRouter 400 errors (context management features not available)
-        function stripCacheControl(obj) {
+        // STRIP ANTHROPIC-ONLY FEATURES — OpenRouter returns 400 for context-management-2025-06-27 (no Anthropic provider)
+        function stripAnthropicBetas(obj) {
           if (Array.isArray(obj)) {
-            obj.forEach(stripCacheControl);
+            obj.forEach(stripAnthropicBetas);
           } else if (obj !== null && typeof obj === 'object') {
             if ('cache_control' in obj) {
               delete obj['cache_control'];
             }
-            Object.values(obj).forEach(stripCacheControl);
+            if ('betas' in obj) {
+              delete obj['betas'];
+            }
+            Object.values(obj).forEach(stripAnthropicBetas);
           }
         }
-        stripCacheControl(payload);
+        stripAnthropicBetas(payload);
+
+        function stripContextManagement(obj) {
+          if (!obj || typeof obj !== 'object') return;
+          if (Array.isArray(obj)) {
+            obj.forEach(stripContextManagement);
+            return;
+          }
+          for (const k of Object.keys(obj)) {
+            const kl = k.toLowerCase().replace(/-/g, '_');
+            if (kl === 'context_management' || kl === 'contextmanagement') {
+              delete obj[k];
+            }
+          }
+          if (obj.metadata && typeof obj.metadata === 'object') {
+            delete obj.metadata.betas;
+            delete obj.metadata.context_management;
+            delete obj.metadata.contextManagement;
+            for (const mk of Object.keys(obj.metadata)) {
+              const mkl = mk.toLowerCase().replace(/-/g, '_');
+              if (mkl === 'context_management' || mkl === 'contextmanagement') {
+                delete obj.metadata[mk];
+              }
+            }
+          }
+          for (const k of Object.keys(obj)) {
+            stripContextManagement(obj[k]);
+          }
+        }
+        stripContextManagement(payload);
 
         requestBodyStr = JSON.stringify(payload);
+        
+        proxyDebugLog(`Outgoing Body: ${requestBodyStr.substring(0, 200)}...`);
       } catch (err) {
         console.error("Error parsing JSON body", err);
+        proxyDebugLog(`JSON parse error: ${err.message}`);
+      }
+
+      if (!parseOk) {
+        res.writeHead(502, { 'Content-Type': 'application/json' });
+        res.end(
+          JSON.stringify({
+            error: {
+              message:
+                'CodeRouter proxy could not parse the request body (invalid JSON or bad compression). Fix: use run-claude.ps1 / run-claude.sh so the proxy receives plain JSON.',
+              type: 'proxy_parse_error',
+            },
+          })
+        );
+        return;
       }
 
       // Forward request to OpenRouter
@@ -138,6 +234,13 @@ const server = http.createServer((req, res) => {
         finalPath = '/api' + finalPath;
       }
       
+      // OpenRouter 400 if context-management-* appears in anthropic-beta (see OpenRouter + Claude Code).
+      const incomingBeta = req.headers['anthropic-beta'];
+      const safeBeta = filterAnthropicBetaHeader(incomingBeta);
+      if (incomingBeta) {
+        proxyDebugLog(`anthropic-beta in: ${incomingBeta} → upstream: ${safeBeta || '(omitted)'}`);
+      }
+
       const options = {
         hostname: 'openrouter.ai',
         port: 443,
@@ -147,15 +250,18 @@ const server = http.createServer((req, res) => {
           'Content-Type': req.headers['content-type'] || 'application/json',
           'Content-Length': Buffer.byteLength(requestBodyStr),
           'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': 'https://github.com/iMayuuR/coderouter', 
+          'HTTP-Referer': 'https://github.com/iMayuuR/coderouter',
           'X-Title': 'CodeRouter',
           'User-Agent': 'CodeRouter Proxy/1.0'
         }
       };
 
-      // Pass along anthropic-version if Claude provided it
+      if (safeBeta) {
+        options.headers['anthropic-beta'] = safeBeta;
+      }
+
       if (req.headers['anthropic-version']) {
-         options.headers['anthropic-version'] = req.headers['anthropic-version'];
+        options.headers['anthropic-version'] = req.headers['anthropic-version'];
       }
 
       const proxyReq = https.request(options, (proxyRes) => {

@@ -11,7 +11,7 @@
     "is_default": true
   },
   "setup_instructions": {
-    "step_1": "Update the 'user_preferences' section with your OpenRouter API key and preferred model.",
+    "step_1": "Update user_preferences with OpenRouter api_key and model. Optional: add \"magic_api_key\": \"<21st.dev key>\" for @21st-dev/magic MCP.",
     "step_2": "Provide this file to your AI Assistant.",
     "step_3": "The Assistant will run 'npm install' and configure your .env file automatically."
   },

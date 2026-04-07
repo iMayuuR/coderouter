@@ -21,7 +21,7 @@
 - **200+ Models:** GPT-4.1, Gemini 3.1 Pro, Llama 4, and more.
 - **👁️ Smart Vision Proxy:** Detects image inputs and automatically routes them to a vision-capable free model (e.g., Qwen 2 VL) so your terminal never breaks.
 - **🧠 200+ Agentic Skills:** Pre-loaded skills for brainstorming, TDD, debugging, code review, UI/UX design, browser automation, security auditing, and more — all available globally.
-- **🔌 MCP Integrations:** Auto-configures MCP servers (like @21st-dev/magic) globally.
+- **🔌 MCP Integrations:** Optional @21st-dev/magic — installer writes **user-scope** MCP in `~/.claude.json` (top-level `mcpServers`) so it appears in **all** projects when `MAGIC_API_KEY` is set.
 - **🌍 Global Setup:** One command installs skills, proxy alias, and MCP across your entire system.
 - **Zero Account Needed:** Use your OpenRouter API key.
 - **Free Options:** Many powerful free models available.
@@ -42,12 +42,12 @@ The easiest way to get started:
    Copy `.env.example` to `.env` and add your [OpenRouter API Key](https://openrouter.ai/settings/keys).
 
 3. **Global Setup**:
-   Run `.\setup-agent.ps1` (Windows) or `node install-global-skills.js`.
+   From the repo folder run **`node install-global-skills.js`** (all platforms; reads `.env`). On Windows, optional **`.\setup-agent.ps1`** only if `ai-agent-config.json` exists — it merges prefs and runs the same installer. This wires **PowerShell profile / PATH**, **user env vars** (Windows), **200+ skills**, and optional **MCP** if `MAGIC_API_KEY` is set.
 
 4. **⚠️ RESTART YOUR TERMINAL**:
-   Close all terminal windows and reopen.
+   Close all sessions and reopen to apply changes.
 
-5. **Type `coderouter or claude` from ANY folder!**
+5. **Type `claude` from ANY folder!**
 
 > See the [QUICKSTART.md](QUICKSTART.md) for more details.
 

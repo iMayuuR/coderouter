@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "Run Claude Code with any AI model via OpenRouter — zero Anthropic account needed.",
   "scripts": {
-    "start": "node -e \"require('child_process').execSync('.\\\\run-claude.bat', {stdio: 'inherit'})\"",
-    "claude": "npx claude"
+    "start": "node launch-claude.js",
+    "claude": "node launch-claude.js",
+    "coderouter": "node launch-claude.js",
+    "setup:21st": "node setup-21st.js"
   },
   "keywords": [
     "claude-code",

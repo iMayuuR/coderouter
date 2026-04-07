@@ -46,12 +46,22 @@ $updatedContent = @()
 
 $apiKey = $config.user_preferences.api_key
 $model = $config.user_preferences.model
+$hasMagicProp = $config.user_preferences.PSObject.Properties.Name -contains 'magic_api_key'
+$magicKey = if ($hasMagicProp) { [string]$config.user_preferences.magic_api_key } else { $null }
 
 foreach ($line in $envContent) {
     if ($line -match '^OPENROUTER_API_KEY=') {
         $updatedContent += "OPENROUTER_API_KEY=$apiKey"
     } elseif ($line -match '^CLAUDE_MODEL=') {
         $updatedContent += "CLAUDE_MODEL=$model"
+    } elseif ($line -match '^MAGIC_API_KEY=') {
+        if ($magicKey -and $magicKey.Trim().Length -gt 0) {
+            $updatedContent += "MAGIC_API_KEY=$magicKey"
+        } elseif ($hasMagicProp) {
+            # JSON has magic_api_key but empty — remove from .env
+        } else {
+            $updatedContent += $line
+        }
     } else {
         $updatedContent += $line
     }
@@ -63,6 +73,9 @@ if (-not ($updatedContent -match '^OPENROUTER_API_KEY=')) {
 }
 if (-not ($updatedContent -match '^CLAUDE_MODEL=')) {
     $updatedContent += "CLAUDE_MODEL=$model"
+}
+if ($magicKey -and $magicKey.Trim().Length -gt 0 -and -not ($updatedContent -match '^MAGIC_API_KEY=')) {
+    $updatedContent += "MAGIC_API_KEY=$magicKey"
 }
 
 $updatedContent | Set-Content $envPath

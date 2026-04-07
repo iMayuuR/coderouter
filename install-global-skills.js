@@ -1,12 +1,40 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+const { execSync } = require('child_process');
+
+// Define .env path first to avoid ReferenceErrors
+const envFilePath = path.join(__dirname, '.env');
+/** Always used for Windows User CLAUDE_MODEL — CodeRouter default is the free OpenRouter router. */
+const GLOBAL_USER_CLAUDE_MODEL = 'openrouter/free';
+let apiKey = '';
+
+if (fs.existsSync(envFilePath)) {
+  const envContent = fs.readFileSync(envFilePath, 'utf8');
+  const keyMatch = envContent.match(/^OPENROUTER_API_KEY=(.+)$/m);
+  if (keyMatch) apiKey = keyMatch[1].trim();
+}
 
 console.log("🚀 Starting global skills and MCP setup...");
+console.log("   (Uses .env in this folder — copy install-global-skills.example.env → .env if needed.)");
+console.log("");
+console.log("   Optional MCP @21st-dev/magic: set MAGIC_API_KEY in .env, or run: npm run setup:21st");
+console.log("   (Get a key at https://21st.dev — then run this installer again to write ~/.claude.json)");
 
 // 1. Copy bundled skills to home directory (~/.claude/skills)
-const srcSkills = path.join(__dirname, 'bundled-skills');
+const srcSkills = path.join(__dirname, 'bundled-skills', 'skills');
 const destSkills = path.join(os.homedir(), '.claude', 'skills');
+
+// Cleanup old nested structure if it exists from previous buggy runs
+const oldNestedSkills = path.join(destSkills, 'skills');
+if (fs.existsSync(oldNestedSkills)) {
+  console.log("🧹 Cleaning up old nested skills folder...");
+  try {
+    fs.rmSync(oldNestedSkills, { recursive: true, force: true });
+  } catch (err) {
+    console.warn("⚠️ Could not remove old nested skills folder:", err.message);
+  }
+}
 
 function copyRecursiveSync(src, dest) {
   const exists = fs.existsSync(src);
@@ -44,67 +72,101 @@ const claudeConfigPath = path.join(os.homedir(), '.claude.json');
 const homedir = os.homedir().replace(/\\/g, '/');
 
 if (fs.existsSync(claudeConfigPath)) {
-  console.log(`Configuring global MCP in ${claudeConfigPath}...`);
+  console.log(`Configuring user-scoped MCP in ${claudeConfigPath}...`);
   try {
     const configData = fs.readFileSync(claudeConfigPath, 'utf8');
     const config = JSON.parse(configData);
-    
-    // Find or create the global user project key
-    const userKey = Object.keys(config.projects || {}).find(k => k.toLowerCase() === homedir.toLowerCase()) || homedir;
-    
-    if (!config.projects) config.projects = {};
-    if (!config.projects[userKey]) config.projects[userKey] = {};
-    if (!config.projects[userKey].mcpServers) config.projects[userKey].mcpServers = {};
-    
+
+    // Claude Code: user scope = top-level `mcpServers` (all projects). Local scope = `projects["<workspace path>"].mcpServers`.
+    // Writing under projects[homedir] does not apply to folders like .../coderouter — those stayed empty.
+    if (!config.mcpServers) config.mcpServers = {};
+
+    const userHomeProjectKey =
+      Object.keys(config.projects || {}).find((k) => k.toLowerCase() === homedir.toLowerCase()) ||
+      homedir;
+
     // Read 21st-dev/magic API key from env, not hardcoded
-    const magicApiKey = process.env.MAGIC_API_KEY || 
+    const magicApiKey =
+      process.env.MAGIC_API_KEY ||
       (() => {
         const envContent = fs.existsSync(envFilePath) ? fs.readFileSync(envFilePath, 'utf8') : '';
         const m = envContent.match(/^MAGIC_API_KEY=(.+)$/m);
         return m ? m[1].trim() : '';
       })();
 
+    const magicServerName = '@21st-dev/magic';
+
     if (!magicApiKey) {
-      console.log("⚠️  MAGIC_API_KEY not found in .env — skipping @21st-dev/magic MCP. Add MAGIC_API_KEY=your-key to .env and re-run.");
+      console.log('⚠️  MAGIC_API_KEY not set — skipping @21st-dev/magic MCP.');
+      console.log('   Add MAGIC_API_KEY=<key from https://21st.dev> to your repo .env, then run this script again.');
+      if (config.mcpServers[magicServerName]) {
+        delete config.mcpServers[magicServerName];
+        console.log('   Removed stale @21st-dev/magic from user mcpServers (no valid key).');
+      }
+      if (config.projects?.[userHomeProjectKey]?.mcpServers?.[magicServerName]) {
+        delete config.projects[userHomeProjectKey].mcpServers[magicServerName];
+        console.log('   Removed legacy @21st-dev/magic from projects[homedir].');
+      }
     } else {
-      config.projects[userKey].mcpServers['@21st-dev/magic'] = {
-        command: "npx",
-        args: ["-y", "@21st-dev/magic@latest"],
-        env: {
-          API_KEY: magicApiKey
-        }
-      };
+      const win = process.platform === 'win32';
+      // Windows: Claude docs recommend cmd /c for stdio MCP that shells out to npx
+      config.mcpServers[magicServerName] = win
+        ? {
+            command: 'cmd',
+            args: ['/c', 'npx', '-y', '@21st-dev/magic@latest'],
+            env: { API_KEY: magicApiKey },
+          }
+        : {
+            command: 'npx',
+            args: ['-y', '@21st-dev/magic@latest'],
+            env: { API_KEY: magicApiKey },
+          };
+      if (config.projects?.[userHomeProjectKey]?.mcpServers?.[magicServerName]) {
+        delete config.projects[userHomeProjectKey].mcpServers[magicServerName];
+        console.log('   Migrated: removed duplicate @21st-dev/magic from projects[homedir] (now user-scoped).');
+      }
+      console.log(
+        '✅ MCP @21st-dev/magic configured in ~/.claude.json top-level mcpServers (user scope — all folders).',
+      );
     }
-    
+
     fs.writeFileSync(claudeConfigPath, JSON.stringify(config, null, 2));
-    console.log("✅ MCP Server @21st-dev/magic configured successfully!");
   } catch (e) {
     console.error("❌ Failed to update .claude.json:", e);
   }
 } else {
-  console.log("⚠️ .claude.json not found (Claude Code might not be installed or run yet). Skipping MCP config.");
+  console.log('⚠️ .claude.json not found — skipping MCP config.');
+  console.log('   Run Claude Code once (any folder) so it creates ~/.claude.json, then run: node install-global-skills.js');
 }
 
 // 3. Set persistent User-level environment variables (Windows Registry / shell exports)
 // This ensures ANY terminal picks up the proxy config — no alias needed for model routing
 
-const envFilePath = path.join(__dirname, '.env');
-let apiKey = '';
-let claudeModel = 'openrouter/free';
-
-if (fs.existsSync(envFilePath)) {
-  const envContent = fs.readFileSync(envFilePath, 'utf8');
-  const keyMatch = envContent.match(/^OPENROUTER_API_KEY=(.+)$/m);
-  const modelMatch = envContent.match(/^CLAUDE_MODEL=(.+)$/m);
-  if (keyMatch) apiKey = keyMatch[1].trim();
-  if (modelMatch) claudeModel = modelMatch[1].trim();
-}
-
 const isWin = process.platform === 'win32';
 const scriptPath = path.join(__dirname, isWin ? 'run-claude.ps1' : 'run-claude.sh');
 
 if (isWin) {
-  // 3a. Create a global batch wrapper at a location in PATH
+  // 3a. Add OPENROUTER_API_KEY and CLAUDE_MODEL to User environment variables
+  //    Pass values via env (avoids shell quoting / injection if key has quotes)
+  if (apiKey) {
+    try {
+      console.log("⚙️ Setting User environment variables...");
+      console.log(`   CLAUDE_MODEL → ${GLOBAL_USER_CLAUDE_MODEL} (pinned for global launcher)`);
+      execSync(
+        `powershell -NoProfile -Command "[Environment]::SetEnvironmentVariable('OPENROUTER_API_KEY', $env:CODEROUTER_OR_KEY, 'User')"`,
+        { env: { ...process.env, CODEROUTER_OR_KEY: apiKey } }
+      );
+      execSync(
+        `powershell -NoProfile -Command "[Environment]::SetEnvironmentVariable('CLAUDE_MODEL', $env:CODEROUTER_OR_MODEL, 'User')"`,
+        { env: { ...process.env, CODEROUTER_OR_MODEL: GLOBAL_USER_CLAUDE_MODEL } }
+      );
+      console.log("✅ Global Environment Variables set successfully!");
+    } catch (e) {
+      console.log(`⚠️ Could not set User environment variables: ${e.message}`);
+    }
+  }
+
+  // 3b. Create a global batch wrapper at a location in PATH
   // This creates "claude.cmd" in the user's AppData\Local\Microsoft\WindowsApps or a custom bin
   const binDir = path.join(os.homedir(), '.coderouter', 'bin');
   if (!fs.existsSync(binDir)) fs.mkdirSync(binDir, { recursive: true });
@@ -114,14 +176,19 @@ REM CodeRouter Global Launcher - Auto-generated
 powershell -ExecutionPolicy Bypass -File "${scriptPath}" %*
 `;
   fs.writeFileSync(path.join(binDir, 'claude.cmd'), batchContent);
-  console.log(`✅ Created global launcher at ${path.join(binDir, 'claude.cmd')}`);
+  fs.writeFileSync(path.join(binDir, 'coderouter.cmd'), batchContent);
+  console.log(`✅ Created global launchers: ${path.join(binDir, 'claude.cmd')} and coderouter.cmd`);
 
   // 3b. Add to PATH if not already there (User-level)
-  const { execSync } = require('child_process');
   try {
     const currentPath = execSync('powershell -Command "[Environment]::GetEnvironmentVariable(\'PATH\', \'User\')"', { encoding: 'utf8' }).trim();
     if (!currentPath.includes('.coderouter\\bin')) {
-      execSync(`powershell -Command "[Environment]::SetEnvironmentVariable('PATH', '${binDir};${currentPath}', 'User')"`, { encoding: 'utf8' });
+      // Pass merged PATH via env — avoids PowerShell quoting/injection if PATH contains quotes or ';'
+      const mergedPath = `${binDir};${currentPath}`;
+      execSync(
+        'powershell -NoProfile -Command "[Environment]::SetEnvironmentVariable(\'PATH\', $env:CODEROUTER_MERGED_PATH, \'User\')"',
+        { encoding: 'utf8', env: { ...process.env, CODEROUTER_MERGED_PATH: mergedPath } }
+      );
       console.log(`✅ Added ${binDir} to User PATH`);
     }
   } catch (e) {
@@ -139,27 +206,55 @@ powershell -ExecutionPolicy Bypass -File "${scriptPath}" %*
     if (!fs.existsSync(psProfileDir)) fs.mkdirSync(psProfileDir, { recursive: true });
     
     let content = fs.existsSync(psProfile) ? fs.readFileSync(psProfile, 'utf8') : '';
-    const aliasCode = `\n# CodeRouter Global Alias\nfunction claude { & "${scriptPath}" @args }\n`;
-    
-    if (!content.includes('CodeRouter Global Alias')) {
-      fs.appendFileSync(psProfile, aliasCode);
-      console.log(`✅ Added PowerShell global 'claude' alias to ${psProfile}`);
+    const psNl = '\r\n';
+    const psBlock =
+      `# CodeRouter Global Alias${psNl}` +
+      `function claude { & "${scriptPath}" @args }${psNl}` +
+      `function coderouter { & "${scriptPath}" @args }${psNl}`;
+
+    if (content.includes('# CodeRouter Global Alias')) {
+      console.log(`🔄 Updating CodeRouter aliases in ${psProfile}...`);
+      content = content.replace(
+        /# CodeRouter Global Alias\r?\n(?:function (?:claude|coderouter)[^\r\n]*\r?\n)+/,
+        psBlock
+      );
+      fs.writeFileSync(psProfile, content);
+    } else {
+      fs.appendFileSync(psProfile, `${psNl}${psBlock}`);
+      console.log(`✅ Added PowerShell global 'claude' and 'coderouter' to ${psProfile}`);
     }
   });
 } else {
-  const unixAlias = `\n# CodeRouter Global Alias\nalias claude="${scriptPath}"\n`;
-  ['.bashrc', '.zshrc', '.bash_profile'].forEach(file => {
-    const rcPath = path.join(os.homedir(), file);
-    if (fs.existsSync(rcPath)) {
-      let content = fs.readFileSync(rcPath, 'utf8');
-      if (!content.includes('CodeRouter Global Alias')) {
-        fs.appendFileSync(rcPath, unixAlias);
-        console.log(`✅ Added Unix global 'claude' alias to ~/${file}`);
-      }
+  const unixBlock =
+    `# CodeRouter Global Alias\n` +
+    `alias claude="${scriptPath}"\n` +
+    `alias coderouter="${scriptPath}"\n`;
+  const home = os.homedir();
+  const candidates = ['.zshrc', '.bashrc', '.bash_profile'];
+  let rcPath = candidates.map((f) => path.join(home, f)).find((p) => fs.existsSync(p));
+  if (!rcPath) {
+    const shell = process.env.SHELL || '';
+    const fallback = shell.includes('zsh') ? '.zshrc' : '.bashrc';
+    rcPath = path.join(home, fallback);
+    if (!fs.existsSync(rcPath)) {
+      fs.writeFileSync(rcPath, `# Created by CodeRouter install-global-skills.js\n`);
+      console.log(`📝 Created ~/${fallback} (no existing shell rc found)`);
     }
-  });
+  }
+  let content = fs.readFileSync(rcPath, 'utf8');
+  if (content.includes('# CodeRouter Global Alias')) {
+    const newContent = content.replace(
+      /# CodeRouter Global Alias\n(?:alias (?:claude|coderouter)="[^"]+"\n)+/,
+      unixBlock
+    );
+    fs.writeFileSync(rcPath, newContent);
+    console.log(`🔄 Updated Unix global 'claude' / 'coderouter' aliases in ${rcPath}`);
+  } else {
+    fs.appendFileSync(rcPath, `\n${unixBlock}`);
+    console.log(`✅ Added Unix global 'claude' and 'coderouter' to ${rcPath}`);
+  }
 }
 
-console.log("\n🎉 Setup complete! RESTART YOUR TERMINAL, then type 'claude' from ANY directory!");
+console.log("\n🎉 Setup complete! RESTART YOUR TERMINAL, then type 'claude' or 'coderouter' from ANY directory!");
 console.log("   The proxy + openrouter/free model will be used automatically.");
 
