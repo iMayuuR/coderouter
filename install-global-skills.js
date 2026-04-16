@@ -5,14 +5,16 @@ const { execSync } = require('child_process');
 
 // Define .env path first to avoid ReferenceErrors
 const envFilePath = path.join(__dirname, '.env');
-/** Always used for Windows User CLAUDE_MODEL — CodeRouter default is the free OpenRouter router. */
-const GLOBAL_USER_CLAUDE_MODEL = 'openrouter/free';
 let apiKey = '';
+let selectedModel = 'openrouter/free';
 
 if (fs.existsSync(envFilePath)) {
   const envContent = fs.readFileSync(envFilePath, 'utf8');
   const keyMatch = envContent.match(/^OPENROUTER_API_KEY=(.+)$/m);
   if (keyMatch) apiKey = keyMatch[1].trim();
+  
+  const modelMatch = envContent.match(/^CLAUDE_MODEL=(.+)$/m);
+  if (modelMatch) selectedModel = modelMatch[1].trim();
 }
 
 console.log("🚀 Starting global skills and MCP setup...");
@@ -151,14 +153,14 @@ if (isWin) {
   if (apiKey) {
     try {
       console.log("⚙️ Setting User environment variables...");
-      console.log(`   CLAUDE_MODEL → ${GLOBAL_USER_CLAUDE_MODEL} (pinned for global launcher)`);
+      console.log(`   CLAUDE_MODEL → ${selectedModel} (pinned for global launcher)`);
       execSync(
         `powershell -NoProfile -Command "[Environment]::SetEnvironmentVariable('OPENROUTER_API_KEY', $env:CODEROUTER_OR_KEY, 'User')"`,
         { env: { ...process.env, CODEROUTER_OR_KEY: apiKey } }
       );
       execSync(
         `powershell -NoProfile -Command "[Environment]::SetEnvironmentVariable('CLAUDE_MODEL', $env:CODEROUTER_OR_MODEL, 'User')"`,
-        { env: { ...process.env, CODEROUTER_OR_MODEL: GLOBAL_USER_CLAUDE_MODEL } }
+        { env: { ...process.env, CODEROUTER_OR_MODEL: selectedModel } }
       );
       console.log("✅ Global Environment Variables set successfully!");
     } catch (e) {

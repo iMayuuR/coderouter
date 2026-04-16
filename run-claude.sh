@@ -21,6 +21,11 @@ else
     exit 1
 fi
 
+# Ensure no zombie proxy is hogging port 3000
+if lsof -Pi :3000 -sTCP:LISTEN -t >/dev/null 2>&1; then
+    lsof -Pi :3000 -sTCP:LISTEN -t | xargs kill -9 2>/dev/null
+fi
+
 # Start Smart Image Routing Proxy
 node "$SCRIPT_DIR/proxy.js" &
 PROXY_PID=$!
