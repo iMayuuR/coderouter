@@ -41,6 +41,14 @@ $env:ANTHROPIC_DEFAULT_SONNET_MODEL = $env:CLAUDE_MODEL
 $env:ANTHROPIC_DEFAULT_HAIKU_MODEL = $env:CLAUDE_MODEL
 $env:CLAUDE_CODE_SUBAGENT_MODEL = $env:CLAUDE_MODEL
 
+# Ensure no zombie proxy is hogging port 3000
+$existingProxy = Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique
+if ($existingProxy) {
+    foreach ($pid_ in $existingProxy) {
+        Stop-Process -Id $pid_ -Force -ErrorAction SilentlyContinue
+    }
+}
+
 # Start Smart Image Routing Proxy in background
 $proxyProcess = Start-Process node -ArgumentList "`"$proxyPath`"" -WindowStyle Hidden -PassThru
 Start-Sleep -s 1

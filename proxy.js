@@ -212,6 +212,44 @@ const server = http.createServer((req, res) => {
         }
         stripContextManagement(payload);
 
+        function stripUnsupportedJsonSchema(obj) {
+          if (!obj || typeof obj !== 'object') return;
+          if (Array.isArray(obj)) {
+            obj.forEach(stripUnsupportedJsonSchema);
+            return;
+          }
+          
+          const forbiddenKeys = [
+            '$schema',
+            'additionalProperties',
+            'propertyNames',
+            'exclusiveMinimum',
+            'const',
+            '$ref',
+            '$defs',
+            'x-google-enum-descriptions',
+            'x-google-enum-deprecated',
+            'x-google-identifier',
+            'deprecated'
+          ];
+          
+          for (const key of forbiddenKeys) {
+            delete obj[key];
+          }
+          
+          for (const k of Object.keys(obj)) {
+            stripUnsupportedJsonSchema(obj[k]);
+          }
+        }
+
+        if (payload.tools && Array.isArray(payload.tools)) {
+          payload.tools.forEach(tool => {
+            if (tool.input_schema) {
+              stripUnsupportedJsonSchema(tool.input_schema);
+            }
+          });
+        }
+
         requestBodyStr = JSON.stringify(payload);
         
         proxyDebugLog(`Outgoing Body: ${requestBodyStr.substring(0, 200)}...`);
