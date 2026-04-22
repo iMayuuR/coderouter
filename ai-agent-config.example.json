@@ -3,39 +3,15 @@
   "project": {
     "name": "CodeRouter",
     "year": "2026",
-    "description": "Unlock 200+ models in Claude Code without an Anthropic account.",
-    "avatar": "🚀",
-    "assistant_id": "coderouter"
-  },
-  "providers": {
-    "openrouter": {
-      "enabled": true,
-      "api_key": "sk-or-v1-..."
-    },
-    "anthropic": {
-      "enabled": false,
-      "api_key": ""
-    },
-    "openai": {
-      "enabled": false,
-      "api_key": ""
-    },
-    "mistral": {
-      "enabled": false,
-      "api_key": ""
-    },
-    "groq": {
-      "enabled": false,
-      "api_key": ""
-    }
+    "description": "Unlock 200+ models in Claude Code without an Anthropic account."
   },
   "user_preferences": {
-    "primary_provider": "openrouter",
+    "api_key": "sk-or-v1-...",
     "model": "openrouter/free",
     "is_default": true
   },
   "setup_instructions": {
-    "step_1": "Update user_preferences with OpenRouter api_key and model. Optional: add \"magic_api_key\": \"<21st.dev key>\" for @21st-dev/magic MCP.",
+    "step_1": "Update the 'user_preferences' section with your OpenRouter API key and preferred model.",
     "step_2": "Provide this file to your AI Assistant.",
     "step_3": "The Assistant will run 'npm install' and configure your .env file automatically."
   },

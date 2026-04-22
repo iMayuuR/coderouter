@@ -13,7 +13,14 @@ const defaultModel = process.env.CLAUDE_MODEL || 'openrouter/free';
 let fallbackVisionModel = process.env.VISION_MODEL || 'qwen/qwen-2.5-vl-72b-instruct:free';
 let dynamicVisionModel = null;
 const fs = require('fs');
-const apiKey = (process.env.OPENROUTER_API_KEY || '').trim().replace(/^["'](.*)["']$/, '$1');
+const OPENROUTER_API_KEY = (process.env.OPENROUTER_API_KEY || '').trim().replace(/^["'](.*)["']$/, '$1');
+const ANTHROPIC_API_KEY = (process.env.ANTHROPIC_API_KEY || '').trim().replace(/^["'](.*)["']$/, '$1');
+const OPENAI_API_KEY = (process.env.OPENAI_API_KEY || '').trim().replace(/^["'](.*)["']$/, '$1');
+const MISTRAL_API_KEY = (process.env.MISTRAL_API_KEY || '').trim().replace(/^["'](.*)["']$/, '$1');
+const GROQ_API_KEY = (process.env.GROQ_API_KEY || '').trim().replace(/^["'](.*)["']$/, '$1');
+const GOOGLE_API_KEY = (process.env.GOOGLE_API_KEY || '').trim().replace(/^["'](.*)["']$/, '$1');
+
+const PRIMARY_PROVIDER = process.env.PRIMARY_PROVIDER || 'openrouter';
 
 const PROXY_DEBUG =
   process.env.CODEROUTER_PROXY_DEBUG === '1' ||
@@ -227,41 +234,48 @@ const server = http.createServer((req, res) => {
         return;
       }
 
-      // Forward request to OpenRouter
-      // Make sure we always prepend '/api' to force OpenRouter's Anthropic compatibility layer
-      let finalPath = req.url || '/v1/messages';
-      if (!finalPath.startsWith('/api')) {
-        finalPath = '/api' + finalPath;
-      }
+      // --- Dynamic Routing (Jan-style) ---
+      let targetHostname = 'openrouter.ai';
+      let targetPath = req.url || '/v1/messages';
+      let targetKey = OPENROUTER_API_KEY;
+      let targetHeaders = {
+        'Content-Type': req.headers['content-type'] || 'application/json',
+        'Content-Length': Buffer.byteLength(requestBodyStr),
+      };
+
+      const requestedModel = payload.model || defaultModel;
       
-      // OpenRouter 400 if context-management-* appears in anthropic-beta (see OpenRouter + Claude Code).
-      const incomingBeta = req.headers['anthropic-beta'];
-      const safeBeta = filterAnthropicBetaHeader(incomingBeta);
-      if (incomingBeta) {
-        proxyDebugLog(`anthropic-beta in: ${incomingBeta} → upstream: ${safeBeta || '(omitted)'}`);
+      if (requestedModel.startsWith('anthropic/') && ANTHROPIC_API_KEY) {
+        targetHostname = 'api.anthropic.com';
+        targetPath = '/v1/messages';
+        targetKey = ANTHROPIC_API_KEY;
+        targetHeaders['anthropic-version'] = req.headers['anthropic-version'] || '2023-06-01';
+        targetHeaders['anthropic-dangerous-direct-browser-access'] = 'true';
+      } else if (requestedModel.startsWith('openai/') && OPENAI_API_KEY) {
+        // Basic translation for OpenAI would go here
+        // For now, we still use OpenRouter for translation unless direct OpenAI is needed
+        targetHostname = 'openrouter.ai'; 
+      } else {
+        // Default to OpenRouter
+        if (!targetPath.startsWith('/api')) {
+          targetPath = '/api' + targetPath;
+        }
+        targetHeaders['HTTP-Referer'] = 'https://github.com/iMayuuR/coderouter';
+        targetHeaders['X-Title'] = 'CodeRouter';
       }
 
+      targetHeaders['Authorization'] = `Bearer ${targetKey}`;
+
       const options = {
-        hostname: 'openrouter.ai',
+        hostname: targetHostname,
         port: 443,
-        path: finalPath,
+        path: targetPath,
         method: 'POST',
-        headers: {
-          'Content-Type': req.headers['content-type'] || 'application/json',
-          'Content-Length': Buffer.byteLength(requestBodyStr),
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': 'https://github.com/iMayuuR/coderouter',
-          'X-Title': 'CodeRouter',
-          'User-Agent': 'CodeRouter Proxy/1.0'
-        }
+        headers: targetHeaders
       };
 
       if (safeBeta) {
         options.headers['anthropic-beta'] = safeBeta;
-      }
-
-      if (req.headers['anthropic-version']) {
-        options.headers['anthropic-version'] = req.headers['anthropic-version'];
       }
 
       const proxyReq = https.request(options, (proxyRes) => {
