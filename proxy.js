@@ -11,7 +11,7 @@ const { translateAnthropicToOpenAI, translateOpenAIToAnthropicStream } = require
 const PORT = Number(process.env.PORT || 3000);
 
 // Read model configuration from .env
-const defaultModel = process.env.DEFAULT_MODEL || process.env.MODEL_1 || "nvidia/nemotron-3-super-120b-a12b";
+const defaultModel = process.env.DEFAULT_MODEL || process.env.MODEL_1;
 
 // Model presets for quick switching (m1..m5)
 const modelPresets = {};
