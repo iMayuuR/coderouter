@@ -64,7 +64,7 @@ function translateAnthropicToOpenAI(anthropicBody, modelForProvider) {
             content: typeof part.content === "string" ? part.content : JSON.stringify(part.content)
           });
         } else if (part.type === "text") {
-          textParts.push(part.text);
+          textParts.push({ type: "text", text: part.text });
         } else if (part.type === "image") {
           textParts.push({
             type: "image_url",
@@ -79,14 +79,16 @@ function translateAnthropicToOpenAI(anthropicBody, modelForProvider) {
       } else if (toolCalls.length > 0) {
         messages.push({
           role: "assistant",
-          content: textParts.length > 0 ? textParts.join("\n") : null,
+          content: textParts.length > 0 ? textParts : null,
           tool_calls: toolCalls
         });
       } else {
-        messages.push({
-          role: role,
-          content: textParts.length === 1 && typeof textParts[0] === "string" ? textParts[0] : textParts
-        });
+        // If only one text part, send as plain string for maximum compatibility
+        if (textParts.length === 1 && textParts[0].type === "text") {
+          messages.push({ role, content: textParts[0].text });
+        } else {
+          messages.push({ role, content: textParts });
+        }
       }
     } else {
       messages.push({ role, content });
