@@ -15,13 +15,6 @@ function anthropicContentToOpenAI(content) {
         }
       };
     }
-    // Tool results (Anthropic -> OpenAI)
-    if (item.type === "tool_result") {
-      // In OpenAI, tool results are separate messages with role 'tool', 
-      // but in Anthropic they are part of a 'user' message.
-      // We handle this in the main message loop.
-      return null; 
-    }
     return item;
   }).filter(Boolean);
 }
@@ -32,12 +25,10 @@ function anthropicContentToOpenAI(content) {
 function translateAnthropicToOpenAI(anthropicBody, modelForProvider) {
   const messages = [];
   
-  // 1. Handle System Prompt
   if (anthropicBody.system) {
     messages.push({ role: "system", content: anthropicBody.system });
   }
 
-  // 2. Handle Messages (including Tool Use and Tool Results)
   (anthropicBody.messages || []).forEach((msg) => {
     const role = msg.role;
     const content = msg.content;
@@ -74,7 +65,6 @@ function translateAnthropicToOpenAI(anthropicBody, modelForProvider) {
       });
 
       if (toolResults.length > 0) {
-        // Tool results become separate messages in OpenAI
         toolResults.forEach(tr => messages.push(tr));
       } else if (toolCalls.length > 0) {
         messages.push({
@@ -83,7 +73,6 @@ function translateAnthropicToOpenAI(anthropicBody, modelForProvider) {
           tool_calls: toolCalls
         });
       } else {
-        // If only one text part, send as plain string for maximum compatibility
         if (textParts.length === 1 && textParts[0].type === "text") {
           messages.push({ role, content: textParts[0].text });
         } else {
@@ -95,7 +84,6 @@ function translateAnthropicToOpenAI(anthropicBody, modelForProvider) {
     }
   });
 
-  // 3. Handle Tools
   const tools = (anthropicBody.tools || []).map(t => ({
     type: "function",
     function: {
@@ -119,9 +107,12 @@ function translateAnthropicToOpenAI(anthropicBody, modelForProvider) {
 
 /**
  * Translates OpenAI SSE lines to Anthropic SSE events.
- * Handles text content and tool calls.
+ * @param {string} openAiLine - Raw SSE line from OpenAI.
+ * @param {string} messageId - ID to use for the message.
+ * @param {string} model - Model name to report.
+ * @param {Object} state - Persistent state for the current stream.
  */
-function translateOpenAIToAnthropicStream(openAiLine, messageId, model) {
+function translateOpenAIToAnthropicStream(openAiLine, messageId, model, state = {}) {
   if (!openAiLine.startsWith("data: ")) return null;
   const raw = openAiLine.slice(6).trim();
   if (raw === "[DONE]") return "event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n";
@@ -138,45 +129,76 @@ function translateOpenAIToAnthropicStream(openAiLine, messageId, model) {
 
   const delta = choice.delta || {};
   
-  // 1. Message Start / Content Block Start
-  if (delta.role) {
-    return `event: message_start\ndata: {"type":"message_start","message":{"id":"${messageId}","type":"message","role":"assistant","content":[],"model":"${model}","stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":0,"output_tokens":0}}}\n\nevent: content_block_start\ndata: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}\n\n`;
+  // 1. Initialize state for this stream
+  if (!state.toolCalls) state.toolCalls = {}; // index -> { id, name, started }
+  if (!state.textStarted) state.textStarted = false;
+
+  let events = "";
+
+  // 2. Role / Message Start
+  if (delta.role && !state.messageStarted) {
+    state.messageStarted = true;
+    events += `event: message_start\ndata: {"type":"message_start","message":{"id":"${messageId}","type":"message","role":"assistant","content":[],"model":"${model}","stop_reason":null,"stop_sequence":null,"usage":{"input_tokens":0,"output_tokens":0}}}\n\n`;
   }
 
-  // 2. Text Content Delta
-  if (typeof delta.content === "string" && delta.content !== "") {
-    return `event: content_block_delta\ndata: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":${JSON.stringify(delta.content)}}}\n\n`;
+  // 3. Text Content Delta
+  if (typeof delta.content === "string") {
+    if (!state.textStarted) {
+      events += `event: content_block_start\ndata: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}\n\n`;
+      state.textStarted = true;
+    }
+    events += `event: content_block_delta\ndata: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":${JSON.stringify(delta.content)}}}\n\n`;
   }
 
-  // 3. Tool Calls Delta
+  // 4. Tool Calls Delta
   if (delta.tool_calls && Array.isArray(delta.tool_calls)) {
-    const tc = delta.tool_calls[0];
-    const index = tc.index + 1; // Content block 0 is text, tools are 1, 2...
+    delta.tool_calls.forEach(tc => {
+      const idx = tc.index;
+      const blockIdx = idx + 1; // Content block 0 is text, tools follow
 
-    let events = "";
-    
-    // If it's the start of a tool call (has name)
-    if (tc.function && tc.function.name) {
-      events += `event: content_block_start\ndata: {"type":"content_block_start","index":${index},"content_block":{"type":"tool_use","id":"${tc.id || 'tc_' + Math.random().toString(36).slice(2, 9)}","name":"${tc.function.name}","input":{}}}\n\n`;
-    }
+      if (!state.toolCalls[idx]) {
+        state.toolCalls[idx] = { 
+          id: tc.id || `tc_${Math.random().toString(36).slice(2, 9)}`,
+          name: tc.function?.name || "",
+          started: false 
+        };
+      }
 
-    // If it has arguments delta
-    if (tc.function && typeof tc.function.arguments === "string") {
-      events += `event: content_block_delta\ndata: {"type":"content_block_delta","index":${index},"delta":{"type":"input_json_delta","partial_json":${JSON.stringify(tc.function.arguments)}}}\n\n`;
-    }
+      const call = state.toolCalls[idx];
+      
+      // Update name if it arrives in a later chunk (unlikely but possible)
+      if (tc.function?.name) call.name = tc.function.name;
 
-    return events || null;
+      // Start the tool block if we have a name and haven't started yet
+      if (call.name && !call.started) {
+        events += `event: content_block_start\ndata: {"type":"content_block_start","index":${blockIdx},"content_block":{"type":"tool_use","id":"${call.id}","name":"${call.name}","input":{}}}\n\n`;
+        call.started = true;
+      }
+
+      // Pass arguments delta
+      if (tc.function?.arguments) {
+        events += `event: content_block_delta\ndata: {"type":"content_block_delta","index":${blockIdx},"delta":{"type":"input_json_delta","partial_json":${JSON.stringify(tc.function.arguments)}}}\n\n`;
+      }
+    });
   }
 
-  // 4. Message Finish
+  // 5. Message Finish
   if (choice.finish_reason) {
-    let stopReason = "end_turn";
-    if (choice.finish_reason === "tool_calls") stopReason = "tool_use";
-    
-    return `event: content_block_stop\ndata: {"type":"content_block_stop","index":0}\n\nevent: message_delta\ndata: {"type":"message_delta","delta":{"stop_reason":"${stopReason}","stop_sequence":null},"usage":{"output_tokens":${parsed.usage?.completion_tokens || 0}}}\n\n`;
+    // Stop all active blocks
+    if (state.textStarted) {
+      events += `event: content_block_stop\ndata: {"type":"content_block_stop","index":0}\n\n`;
+    }
+    Object.keys(state.toolCalls).forEach(idx => {
+      if (state.toolCalls[idx].started) {
+        events += `event: content_block_stop\ndata: {"type":"content_block_stop","index":${Number(idx) + 1}}\n\n`;
+      }
+    });
+
+    const stopReason = choice.finish_reason === "tool_calls" ? "tool_use" : "end_turn";
+    events += `event: message_delta\ndata: {"type":"message_delta","delta":{"stop_reason":"${stopReason}","stop_sequence":null},"usage":{"output_tokens":${parsed.usage?.completion_tokens || 0}}}\n\n`;
   }
 
-  return null;
+  return events || null;
 }
 
 module.exports = {

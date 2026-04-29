@@ -276,6 +276,7 @@ const server = http.createServer((req, res) => {
 
       const messageId = `msg_${Math.random().toString(36).slice(2, 11)}`;
       let buffer = "";
+      const streamState = {}; // State for stateful SSE translation
 
       const patchStream = new Transform({
         transform(chunk, encoding, callback) {
@@ -283,13 +284,13 @@ const server = http.createServer((req, res) => {
           const lines = buffer.split("\n");
           buffer = lines.pop();
           const translated = lines
-            .map((l) => translateOpenAIToAnthropicStream(l, messageId, originalModel || selectedModel))
+            .map((l) => translateOpenAIToAnthropicStream(l, messageId, originalModel || selectedModel, streamState))
             .filter(Boolean);
           callback(null, translated.join(""));
         },
         flush(callback) {
           if (buffer) {
-            const translated = translateOpenAIToAnthropicStream(buffer, messageId, originalModel || selectedModel);
+            const translated = translateOpenAIToAnthropicStream(buffer, messageId, originalModel || selectedModel, streamState);
             if (translated) this.push(translated);
           }
           callback();
