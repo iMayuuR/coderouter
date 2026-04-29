@@ -35,6 +35,4 @@ proxy-debug.log
 
 # CodeRouter Global Files
 .coderouter/
-# Home-level .claude should still be ignored if accidentally linked
-# but we explicitly want to track bundled-skills/
 

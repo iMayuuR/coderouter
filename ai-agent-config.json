@@ -1,62 +1,52 @@
 {
-  "__comment__": "Give this file to an AI agent (like Antigravity or Claude) to automatically set up your environment.",
+  "__comment__": "Local config for CodeRouter + Claude Code CLI.",
   "project": {
     "name": "CodeRouter",
     "year": "2026",
-    "description": "Unlock 200+ models in Claude Code without an Anthropic account.",
-    "avatar": "🚀",
-    "assistant_id": "coderouter"
+    "description": "No-EXE, multi-provider router for Claude Code"
   },
   "providers": {
     "openrouter": {
       "enabled": true,
-      "api_key": "sk-or-v1-..."
-    },
-    "anthropic": {
-      "enabled": false,
-      "api_key": ""
+      "api_key_env": "OPENROUTER_API_KEY"
     },
     "openai": {
       "enabled": false,
-      "api_key": ""
+      "api_key_env": "OPENAI_API_KEY"
+    },
+    "anthropic": {
+      "enabled": false,
+      "api_key_env": "ANTHROPIC_API_KEY"
     },
     "mistral": {
       "enabled": false,
-      "api_key": ""
+      "api_key_env": "MISTRAL_API_KEY"
     },
     "groq": {
       "enabled": false,
-      "api_key": ""
+      "api_key_env": "GROQ_API_KEY"
+    },
+    "nvidia": {
+      "enabled": false,
+      "api_key_env": "NIM_API_KEY"
+    },
+    "google": {
+      "enabled": false,
+      "api_key_env": "GOOGLE_API_KEY"
     }
   },
-  "user_preferences": {
+  "routing": {
     "primary_provider": "openrouter",
-    "model": "openrouter/free",
-    "is_default": true
+    "default_model": "openrouter/anthropic/claude-3.5-sonnet",
+    "vision_model": "openrouter/qwen/qwen-2.5-vl-72b-instruct:free"
+  },
+  "claude_code_cli": {
+    "anthropic_base_url": "http://127.0.0.1:3000",
+    "anthropic_auth_token": "sk-ant-api03-coderouter-1234567890"
   },
   "setup_instructions": {
-    "step_1": "Update user_preferences with OpenRouter api_key and model. Optional: add \"magic_api_key\": \"<21st.dev key>\" for @21st-dev/magic MCP.",
-    "step_2": "Provide this file to your AI Assistant.",
-    "step_3": "The Assistant will run 'npm install' and configure your .env file automatically."
-  },
-  "supported_models_quick_list": {
-    "free_fast": "stepfun/step-3.5-flash:free",
-    "best_coding": "anthropic/claude-3-7-sonnet",
-    "cheap_powerful": "deepseek/deepseek-chat-v3",
-    "meta_llama": "meta-llama/llama-3.3-70b-instruct:free",
-    "nemotron_120b": "nvidia/nemotron-3-super-120b-a12b:free",
-    "qwen_3_6_plus": "qwen/qwen3.6-plus-preview:free",
-    "sora_2_pro": "openai/sora-2-pro",
-    "veo_3_1": "google/veo-3.1",
-    "minimax_m2_5": "minimax/minimax-m2.5:free",
-    "nemotron_30b": "nvidia/nemotron-3-nano-30b-a3b:free",
-    "nemotron_12b_vl": "nvidia/nemotron-nano-12b-v2-vl:free",
-    "glm_4_5_air": "z-ai/glm-4.5-air:free"
-  },
-  "agent_actions": {
-    "install_dependencies": "npm install",
-    "configure_env": "Create .env from .env.example, then replace placeholders with the values from 'user_preferences' in this JSON file.",
-    "launch_on_windows": ".\\run-claude.ps1",
-    "launch_on_unix": "./run-claude.sh"
+    "step_1": "Set provider keys in .env.",
+    "step_2": "Run npm install and install-global-coderouter.ps1 once.",
+    "step_3": "Restart terminal and use coderouter from any repo."
   }
 }

@@ -1,21 +1,20 @@
 {
-  "name": "claude-code-openrouter",
+  "name": "coderouter",
   "version": "1.0.0",
-  "description": "Run Claude Code with any AI model via OpenRouter — zero Anthropic account needed.",
+  "description": "Claude Code compatible multi-provider router (no EXE required)",
+  "main": "proxy.js",
   "scripts": {
-    "start": "node launch-claude.js",
-    "claude": "node launch-claude.js",
-    "coderouter": "node launch-claude.js",
-    "setup:21st": "node setup-21st.js"
+    "start": "node proxy.js",
+    "dev": "node proxy.js",
+    "check": "node -e \"console.log('CodeRouter config ok')\""
   },
   "keywords": [
     "claude-code",
-    "openrouter",
+    "proxy",
     "ai",
-    "coding-agent",
+    "model-routing",
     "llm",
-    "free-ai",
-    "smart-routing"
+    "multi-provider"
   ],
   "author": "CodeRouter Contributors",
   "license": "MIT",
@@ -28,8 +27,6 @@
   },
   "homepage": "https://github.com/iMayuuR/coderouter#readme",
   "dependencies": {
-    "@anthropic-ai/claude-code": "^2.1.83",
-    "dotenv": "^17.4.0",
-    "framer-motion": "^12.38.0"
+    "dotenv": "^17.4.0"
   }
 }
