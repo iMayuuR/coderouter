@@ -4,7 +4,7 @@ const path = require("path");
 const { Transform } = require("stream");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 
-const { decompressBody, hasImageInput, stripUnsupportedAnthropicFields } = require("./src/utils/helpers");
+const { decompressBody, stripUnsupportedAnthropicFields } = require("./src/utils/helpers");
 const { getRoutingConfig } = require("./src/proxy/router");
 const { translateAnthropicToOpenAI, translateOpenAIToAnthropicStream } = require("./src/proxy/translators");
 
@@ -12,7 +12,6 @@ const PORT = Number(process.env.PORT || 3000);
 
 // Read model configuration from .env
 const defaultModel = process.env.DEFAULT_MODEL || "openrouter/free";
-const visionModel = process.env.VISION_MODEL || defaultModel;
 
 // Model presets for quick switching (m1..m5)
 const modelPresets = {};
@@ -131,12 +130,6 @@ const server = http.createServer((req, res) => {
       const alias = selectedModel.toLowerCase();
       selectedModel = modelAliases[alias];
       console.log(`[ROUTE] Alias "${alias}" → ${selectedModel}`);
-    }
-
-    // Vision model auto-switch
-    if (hasImageInput(payload.messages)) {
-      selectedModel = visionModel;
-      console.log(`[ROUTE] Vision detected → ${selectedModel}`);
     }
 
     // Store original model for response, apply selected model
