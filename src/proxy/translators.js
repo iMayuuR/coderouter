@@ -64,20 +64,22 @@ function translateAnthropicToOpenAI(anthropicBody, modelForProvider) {
         }
       });
 
-      if (toolResults.length > 0) {
-        toolResults.forEach(tr => messages.push(tr));
-      } else if (toolCalls.length > 0) {
-        messages.push({
-          role: "assistant",
-          content: textParts.length > 0 ? textParts : null,
-          tool_calls: toolCalls
-        });
-      } else {
+      if (textParts.length > 0) {
         if (textParts.length === 1 && textParts[0].type === "text") {
           messages.push({ role, content: textParts[0].text });
         } else {
           messages.push({ role, content: textParts });
         }
+      }
+
+      if (toolResults.length > 0) {
+        toolResults.forEach(tr => messages.push(tr));
+      } else if (toolCalls.length > 0) {
+        messages.push({
+          role: "assistant",
+          content: null, 
+          tool_calls: toolCalls
+        });
       }
     } else {
       messages.push({ role, content });
