@@ -223,15 +223,32 @@ const server = http.createServer((req, res) => {
                 usage: { input_tokens: 0, output_tokens: 0 }
               });
             }
-            const content = openaiRes.choices[0].message?.content || "";
+            const message = openaiRes.choices[0].message || {};
+            const content = [];
+            
+            if (message.content) {
+              content.push({ type: "text", text: message.content });
+            }
+            
+            if (message.tool_calls && Array.isArray(message.tool_calls)) {
+              message.tool_calls.forEach(tc => {
+                content.push({
+                  type: "tool_use",
+                  id: tc.id,
+                  name: tc.function.name,
+                  input: JSON.parse(tc.function.arguments || "{}")
+                });
+              });
+            }
+
             const usage = openaiRes.usage || {};
             const anthropicRes = {
               id: `msg_${Math.random().toString(36).slice(2, 11)}`,
               type: "message",
               role: "assistant",
-              content: [{ type: "text", text: content }],
+              content: content,
               model: originalModel || selectedModel,
-              stop_reason: "end_turn",
+              stop_reason: message.tool_calls ? "tool_use" : "end_turn",
               stop_sequence: null,
               usage: {
                 input_tokens: usage.prompt_tokens || 0,
