@@ -10,6 +10,7 @@ import sys
 import time
 from collections.abc import Mapping, Sequence
 from pathlib import Path
+from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -153,7 +154,7 @@ def launch_claude(argv: Sequence[str] | None = None) -> None:
 
     settings = get_settings()
     proxy_root_url = local_proxy_root_url(settings)
-    proxy_process: subprocess.Popen[bytes] | None = None
+    proxy_process: subprocess.Popen[Any] | None = None
     if _preflight_proxy(proxy_root_url):
         print(
             "Coderouter proxy not running. Starting it in the background...",

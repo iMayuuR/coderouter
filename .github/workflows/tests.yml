@@ -45,7 +45,7 @@ jobs:
         run: uv run ruff check
 
       - name: Type check
-        run: uv run ty check
+        run: uv run ty check api cli config core messaging providers scratch smoke tests
 
       - name: Run tests
         run: uv run pytest -v --tb=short
