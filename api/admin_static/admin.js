@@ -19,7 +19,7 @@ function sourceLabel(source) {
     explicit_env_file: "FCC_ENV_FILE",
     process: "process env",
   };
-  return labels[source] || source;
+  return Object.prototype.hasOwnProperty.call(labels, source) ? labels[source] : source;
 }
 
 function providerName(providerId) {
@@ -34,7 +34,7 @@ function providerName(providerId) {
     wafer: "Wafer",
     opencode: "OpenCode Zen",
   };
-  if (names[providerId]) return names[providerId];
+  if (Object.prototype.hasOwnProperty.call(names, providerId)) return names[providerId];
   return providerId
     .split("_")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
@@ -115,7 +115,9 @@ function renderProviders(providerStatus) {
 
     const title = document.createElement("div");
     title.className = "provider-title";
-    title.innerHTML = `<strong>${providerName(provider.provider_id)}</strong>`;
+    const strong = document.createElement("strong");
+    strong.textContent = providerName(provider.provider_id);
+    title.appendChild(strong);
 
     const pill = document.createElement("span");
     pill.className = `status-pill ${statusClass(provider.status)}`;
@@ -168,7 +170,13 @@ function renderSections(sections, fields) {
 
     const heading = document.createElement("div");
     heading.className = "section-heading";
-    heading.innerHTML = `<div><h3>${section.label}</h3><p>${section.description}</p></div>`;
+    const headingInner = document.createElement("div");
+    const h3 = document.createElement("h3");
+    h3.textContent = section.label;
+    const p = document.createElement("p");
+    p.textContent = section.description;
+    headingInner.append(h3, p);
+    heading.appendChild(headingInner);
     sectionEl.appendChild(heading);
 
     const grid = document.createElement("div");
@@ -201,9 +209,12 @@ function renderField(field) {
 
   const label = document.createElement("label");
   label.htmlFor = `field-${field.key}`;
-  label.innerHTML = `<span>${field.label}</span><span class="field-source">${sourceLabel(
-    field.source,
-  )}${field.locked ? " locked" : ""}</span>`;
+  const spanLabel = document.createElement("span");
+  spanLabel.textContent = field.label;
+  const spanSource = document.createElement("span");
+  spanSource.className = "field-source";
+  spanSource.textContent = sourceLabel(field.source) + (field.locked ? " locked" : "");
+  label.append(spanLabel, spanSource);
 
   const input = inputForField(field);
   input.id = `field-${field.key}`;
@@ -297,7 +308,7 @@ function changedValues() {
     if (input.disabled || !input.matches("input, select, textarea")) return;
     const value = readFieldValue(input);
     if (value !== input.dataset.original) {
-      values[input.dataset.key] = value;
+      Object.assign(values, { [input.dataset.key]: value });
     }
   });
   return values;
