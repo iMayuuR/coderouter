@@ -1,5 +1,3 @@
-
-
 def update(path, replaces):
     with open(path, encoding="utf-8") as f:
         content = f.read()
