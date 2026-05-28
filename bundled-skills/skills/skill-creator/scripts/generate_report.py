@@ -9,6 +9,7 @@ Distinguishes between train and test queries.
 import argparse
 import html
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -346,9 +347,17 @@ def main():
     args = parser.parse_args()
 
     if args.input == "-":
-        data = json.load(sys.stdin)
+        try:
+            data = json.load(sys.stdin)
+        except json.JSONDecodeError:
+            print("Error: Invalid JSON from stdin", file=sys.stderr)
+            sys.exit(1)
     else:
-        data = json.loads(Path(args.input).read_text())
+        try:
+            data = json.loads(Path(os.path.abspath(args.input)).read_text())
+        except json.JSONDecodeError:
+            print(f"Error: Invalid JSON from {args.input}", file=sys.stderr)
+            sys.exit(1)
 
     html_output = generate_html(data, skill_name=args.skill_name)
 

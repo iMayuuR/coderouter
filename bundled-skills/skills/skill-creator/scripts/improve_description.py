@@ -228,15 +228,15 @@ def main():
     )
     args = parser.parse_args()
 
-    skill_path = Path(args.skill_path)
+    skill_path = Path(os.path.abspath(args.skill_path))
     if not (skill_path / "SKILL.md").exists():
         print(f"Error: No SKILL.md found at {skill_path}", file=sys.stderr)
         sys.exit(1)
 
-    eval_results = json.loads(Path(args.eval_results).read_text())
+    eval_results = json.loads(Path(os.path.abspath(args.eval_results)).read_text())
     history = []
     if args.history:
-        history = json.loads(Path(args.history).read_text())
+        history = json.loads(Path(os.path.abspath(args.history)).read_text())
 
     name, _, content = parse_skill_md(skill_path)
     current_description = eval_results["description"]

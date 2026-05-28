@@ -5,6 +5,7 @@ Requires LibreOffice (soffice) to be installed.
 
 import argparse
 import logging
+import shlex
 import shutil
 import subprocess
 from pathlib import Path
@@ -61,7 +62,7 @@ def accept_changes(
         f"-env:UserInstallation=file://{LIBREOFFICE_PROFILE}",
         "--norestore",
         "vnd.sun.star.script:Standard.Module1.AcceptAllTrackedChanges?language=Basic&location=application",
-        str(output_path.absolute()),
+        shlex.quote(str(output_path.absolute())),
     ]
 
     try:

@@ -1219,6 +1219,13 @@ def _promote_auto(project: dict, force: bool, dry_run: bool) -> int:
 # ─────────────────────────────────────────────
 
 
+def check_sensitive(path) -> bool:
+    import os
+    abs_path = os.path.abspath(str(path))
+    sensitive = ["/.ssh/", "/.aws/", "/.gnupg/", "/.env", "/etc/passwd", "\\.ssh\\", "\\.aws\\", "\\.env"]
+    return any(s in abs_path for s in sensitive)
+
+
 def cmd_projects(args) -> int:
     """List all known projects and their instinct counts."""
     registry = load_registry()
@@ -1245,8 +1252,12 @@ def cmd_projects(args) -> int:
         inherited_count = len(
             _load_instincts_from_dir(inherited_dir, "inherited", "project")
         )
-        obs_file = project_dir / "observations.jsonl"
-        if obs_file.exists():
+        import os
+        obs_file = Path(os.path.abspath(project_dir / "observations.jsonl"))
+        if check_sensitive(obs_file):
+            print(f"Skipping sensitive path: {obs_file}", file=sys.stderr)
+            obs_count = 0
+        elif obs_file.exists():
             with open(obs_file, encoding="utf-8") as f:
                 obs_count = sum(1 for _ in f)
         else:

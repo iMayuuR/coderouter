@@ -6,6 +6,7 @@ Recalculates all formulas in an Excel file using LibreOffice
 import json
 import os
 import platform
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -80,7 +81,7 @@ def recalc(filename, timeout=30):
         "--headless",
         "--norestore",
         "vnd.sun.star.script:Standard.Module1.RecalculateAndSave?language=Basic&location=application",
-        abs_path,
+        shlex.quote(abs_path),
     ]
 
     if platform.system() == "Linux":
