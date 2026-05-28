@@ -18,105 +18,14 @@ Coderouter routes Anthropic Messages API traffic from Claude Code to NVIDIA NIM,
 
 </div>
 
-<div align="center">
-  <img src="assets/pic.png" alt="Coderouter in action" width="700">
-</div>
-
 ## Star History
 
 <div align="center">
   <a href="https://star-history.com/#iMayuuR/coderouter&Date">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=iMayuuR/coderouter&type=Date&theme=dark">
-      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=iMayuuR/coderouter&type=Date">
-      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=iMayuuR/coderouter&type=Date" width="700">
-    </picture>
-  </a>
-</div>
-
-## What You Get
-
-- Drop-in proxy for Claude Code's Anthropic API calls.
-- Nine provider backends: NVIDIA NIM, Kimi, Wafer, OpenRouter, DeepSeek, LM Studio, llama.cpp, Ollama, and OpenCode Zen.
-- Per-model routing: send Opus, Sonnet, Haiku, and fallback traffic to different providers.
-- Native Claude Code `/model` picker support through the proxy's `/v1/models` endpoint (Claude Code must opt in to Gateway model discovery; see [Model Picker](#model-picker)).
-- Streaming, tool use, reasoning/thinking block handling, and local request optimizations.
-- Optional Discord or Telegram bot wrapper for remote coding sessions.
-- Optional Usage through the VSCode extension.
-- Optional voice-note transcription through local Whisper or NVIDIA NIM.
-- Local **Admin UI** at `/admin` to edit supported proxy settings, validate changes, and check providers (loopback access only).
-
-## Quick Start
-
-### 1. Install the latest version of [Claude Code](https://code.claude.com/docs/en/overview)
-
-```bash
-npm install -g @anthropic-ai/claude-code
-```
-
-### 2. Install Runtime Requirements
-
-Install the latest version of [uv](https://docs.astral.sh/uv/getting-started/installation/) and Python 3.14.
-
-macOS/Linux:
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-uv self update
-uv python install 3.14
-```
-
-Windows PowerShell:
-
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-uv self update
-uv python install 3.14
-```
-
-### 3. Get An NVIDIA NIM API Key
-
-Create a free NVIDIA NIM API key, then keep it ready for the Admin UI setup step.
-
-See [NVIDIA NIM provider setup](#nvidia-nim-provider).
-
-### 4. Install The Proxy
-
-```bash
-uv tool install --force git+https://github.com/iMayuuR/coderouter.git
-```
-<div align="center">
-
-# 🤖 Coderouter
-
-Use Claude Code CLI, VS Code, JetBrains ACP, or chat bots through your own Anthropic-compatible proxy.
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
-[![Python 3.14](https://img.shields.io/badge/python-3.14-3776ab.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/)
-[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json&style=for-the-badge)](https://github.com/astral-sh/uv)
-[![Tested with Pytest](https://img.shields.io/badge/testing-Pytest-00c0ff.svg?style=for-the-badge)](https://github.com/iMayuuR/coderouter/actions/workflows/tests.yml)
-[![Type checking: Ty](https://img.shields.io/badge/type%20checking-ty-ffcc00.svg?style=for-the-badge)](https://pypi.org/project/ty/)
-[![Code style: Ruff](https://img.shields.io/badge/code%20formatting-ruff-f5a623.svg?style=for-the-badge)](https://github.com/astral-sh/ruff)
-[![Logging: Loguru](https://img.shields.io/badge/logging-loguru-4ecdc4.svg?style=for-the-badge)](https://github.com/Delgan/loguru)
-
-Coderouter routes Anthropic Messages API traffic from Claude Code to NVIDIA NIM, Kimi, Wafer, OpenRouter, DeepSeek, LM Studio, llama.cpp, or Ollama. It keeps Claude Code's client-side protocol stable while letting you choose free, paid, or local models.
-
-[Quick Start](#quick-start) · [Providers](#choose-a-provider) · [Clients](#connect-claude-code) · [Configuration](#configuration-reference) · [Development](#development)
-
-</div>
-
-<div align="center">
-  <img src="assets/pic.png" alt="Coderouter in action" width="700">
-</div>
-
-## Star History
-
-<div align="center">
-  <a href="https://star-history.com/#iMayuuR/coderouter&Date">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=iMayuuR/coderouter&type=Date&theme=dark">
-      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=iMayuuR/coderouter&type=Date">
-      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=iMayuuR/coderouter&type=Date" width="700">
+      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=iMayuuR/coderouter&type=Date&theme=dark&v=1" />
+      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=iMayuuR/coderouter&type=Date&v=1" />
+      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=iMayuuR/coderouter&type=Date&v=1" />
     </picture>
   </a>
 </div>
@@ -193,10 +102,6 @@ Many terminals make these clickable. Use your configured `PORT` if it is not `80
 ### 6. Open The Admin UI And Configure NVIDIA NIM
 
 Open the **Admin UI** URL from the terminal output.
-
-<div align="center">
-  <img src="assets/admin-page.png" alt="Local admin UI for proxy settings" width="700">
-</div>
 
 Paste your NVIDIA NIM API key into `NVIDIA_NIM_API_KEY`, then click **Validate** and **Apply**.
 
@@ -369,10 +274,6 @@ Restart the IDE after changing the file.
 
 ### 4. Model Picker
 
-<div align="center">
-  <img src="assets/cc-model-picker.png" alt="Claude Code model picker showing gateway models" width="700">
-</div>
-
 ## Optional Integrations
 
 ### 1. Discord And Telegram Bots
@@ -530,11 +431,25 @@ These tools perform outbound HTTP from the proxy. Keep private-network access di
 
 ## How It Works
 
-<div align="center">
-  <img src="assets/how-it-works.svg" alt="Coderouter request flow architecture" width="900">
-</div>
-
-Diagram source: [`assets/how-it-works.mmd`](assets/how-it-works.mmd).
+```mermaid
+graph TD
+    Client[Claude Code / VS Code / Chat Bot] -->|Anthropic API /v1/messages| Proxy[Coderouter FastAPI Proxy]
+    Proxy --> Router{Model Router}
+    
+    Router -->|MODEL_OPUS| P1[NVIDIA NIM]
+    Router -->|MODEL_SONNET| P2[Wafer / OpenRouter]
+    Router -->|MODEL_HAIKU| P3[DeepSeek / Kimi]
+    Router -->|Fallback MODEL| P4[Local: LM Studio / llama.cpp / Ollama]
+    Router -->|Zen Gateway| P5[OpenCode Zen]
+    
+    P1 --> Response[Normalized SSE Stream]
+    P2 --> Response
+    P3 --> Response
+    P4 --> Response
+    P5 --> Response
+    
+    Response -->|Claude Code Protocol| Client
+```
 
 Important pieces:
 
