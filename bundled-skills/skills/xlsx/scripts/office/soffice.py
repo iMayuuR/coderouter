@@ -34,7 +34,7 @@ def get_soffice_env() -> dict:
 
 def run_soffice(args: list[str], **kwargs) -> subprocess.CompletedProcess:
     env = get_soffice_env()
-    return subprocess.run(["soffice"] + args, env=env, **kwargs)
+    return subprocess.run(["soffice", *args], env=env, **kwargs)
 
 
 _SHIM_SO = Path(tempfile.gettempdir()) / "lo_socket_shim.so"

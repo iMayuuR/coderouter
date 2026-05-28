@@ -157,7 +157,7 @@ def _parse_stream_json(stdout: str) -> list[ObservationEvent]:
                             )
                         )
 
-    for _tool_use_id, info in pending.items():
+    for info in pending.values():
         events.append(
             ObservationEvent(
                 timestamp=f"T{info['order']:04d}",

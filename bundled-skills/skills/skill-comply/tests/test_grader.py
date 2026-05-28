@@ -4,8 +4,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
-
-from scripts.grader import ComplianceResult, StepResult, grade
+from scripts.grader import ComplianceResult, grade
 from scripts.parser import parse_spec, parse_trace
 
 FIXTURES = Path(__file__).parent.parent / "fixtures"
@@ -26,7 +25,7 @@ def noncompliant_trace():
     return parse_trace(FIXTURES / "noncompliant_trace.jsonl")
 
 
-def _mock_compliant_classification(spec, trace, model="haiku"):  # noqa: ARG001
+def _mock_compliant_classification(spec, trace, model="haiku"):
     """Simulate LLM correctly classifying a compliant trace."""
     return {
         "write_test": [0],

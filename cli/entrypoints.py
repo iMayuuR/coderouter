@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import os
 import shutil
 import subprocess
@@ -153,7 +154,7 @@ def launch_claude(argv: Sequence[str] | None = None) -> None:
     settings = get_settings()
     proxy_root_url = local_proxy_root_url(settings)
     proxy_process: subprocess.Popen[bytes] | None = None
-    if error := _preflight_proxy(proxy_root_url):
+    if _preflight_proxy(proxy_root_url):
         print(
             "Coderouter proxy not running. Starting it in the background...",
             file=sys.stderr,
@@ -194,7 +195,7 @@ def launch_claude(argv: Sequence[str] | None = None) -> None:
             raise
         except Exception as exc:
             print(f"Error starting proxy automatically: {exc}", file=sys.stderr)
-            raise SystemExit(1)
+            raise SystemExit(1) from exc
 
     args = list(sys.argv[1:] if argv is None else argv)
     claude_command = shutil.which(settings.claude_cli_bin)
@@ -237,10 +238,8 @@ def launch_claude(argv: Sequence[str] | None = None) -> None:
             unregister_pid(process.pid)
         if proxy_process is not None and proxy_process.pid:
             kill_pid_tree_best_effort(proxy_process.pid)
-            try:
+            with contextlib.suppress(subprocess.TimeoutExpired):
                 proxy_process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                pass
             unregister_pid(proxy_process.pid)
 
     raise SystemExit(return_code)

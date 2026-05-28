@@ -11,30 +11,30 @@ const MASKED_SECRET = "********";
 const byId = (id) => document.getElementById(id);
 
 function sourceLabel(source) {
-  const labels = {
-    default: "default",
-    template: "template",
-    repo_env: "repo .env",
-    managed_env: "managed",
-    explicit_env_file: "FCC_ENV_FILE",
-    process: "process env",
-  };
-  return Object.prototype.hasOwnProperty.call(labels, source) ? labels[source] : source;
+  const labels = new Map([
+    ["default", "default"],
+    ["template", "template"],
+    ["repo_env", "repo .env"],
+    ["managed_env", "managed"],
+    ["explicit_env_file", "FCC_ENV_FILE"],
+    ["process", "process env"],
+  ]);
+  return labels.has(source) ? labels.get(source) : source;
 }
 
 function providerName(providerId) {
-  const names = {
-    nvidia_nim: "NVIDIA NIM",
-    open_router: "OpenRouter",
-    deepseek: "DeepSeek",
-    lmstudio: "LM Studio",
-    llamacpp: "llama.cpp",
-    ollama: "Ollama",
-    kimi: "Kimi",
-    wafer: "Wafer",
-    opencode: "OpenCode Zen",
-  };
-  if (Object.prototype.hasOwnProperty.call(names, providerId)) return names[providerId];
+  const names = new Map([
+    ["nvidia_nim", "NVIDIA NIM"],
+    ["open_router", "OpenRouter"],
+    ["deepseek", "DeepSeek"],
+    ["lmstudio", "LM Studio"],
+    ["llamacpp", "llama.cpp"],
+    ["ollama", "Ollama"],
+    ["kimi", "Kimi"],
+    ["wafer", "Wafer"],
+    ["opencode", "OpenCode Zen"],
+  ]);
+  if (names.has(providerId)) return names.get(providerId);
   return providerId
     .split("_")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))

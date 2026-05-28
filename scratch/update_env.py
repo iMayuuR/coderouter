@@ -1,13 +1,14 @@
-import os
 
 
 def update(path, replaces):
-    content = open(path, encoding="utf-8").read()
+    with open(path, encoding="utf-8") as f:
+        content = f.read()
     orig = content
     for old, new in replaces.items():
         content = content.replace(old, new)
     if content != orig:
-        open(path, "w", encoding="utf-8").write(content)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(content)
         print(f"SUCCESS: {path}")
     else:
         print(f"NO CHANGE: {path}")

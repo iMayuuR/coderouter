@@ -11,7 +11,6 @@ import sys
 from pathlib import Path
 
 from office.soffice import get_soffice_env
-
 from openpyxl import load_workbook
 
 MACRO_DIR_MACOS = "~/Library/Application Support/LibreOffice/4/user/basic/Standard"
@@ -85,9 +84,9 @@ def recalc(filename, timeout=30):
     ]
 
     if platform.system() == "Linux":
-        cmd = ["timeout", str(timeout)] + cmd
+        cmd = ["timeout", str(timeout), *cmd]
     elif platform.system() == "Darwin" and has_gtimeout():
-        cmd = ["gtimeout", str(timeout)] + cmd
+        cmd = ["gtimeout", str(timeout), *cmd]
 
     result = subprocess.run(cmd, capture_output=True, text=True, env=get_soffice_env())
 

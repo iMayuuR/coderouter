@@ -161,7 +161,7 @@ class BaseSchemaValidator:
             except Exception as e:
                 errors.append(
                     f"  {xml_file.relative_to(self.unpacked_dir)}: "
-                    f"Unexpected error: {str(e)}"
+                    f"Unexpected error: {e!s}"
                 )
 
         if errors:
@@ -480,9 +480,7 @@ class BaseSchemaValidator:
 
         if elem_lower.endswith("id") and len(elem_lower) > 2:
             prefix = elem_lower[:-2]
-            if prefix.endswith("master"):
-                return prefix.lower()
-            elif prefix.endswith("layout"):
+            if prefix.endswith("master") or prefix.endswith("layout"):
                 return prefix.lower()
             else:
                 if prefix == "sld":
@@ -676,7 +674,7 @@ class BaseSchemaValidator:
             if original_error_count:
                 print(f"  - With original errors (ignored): {original_error_count}")
             print(
-                f"  - With NEW errors: {len(new_errors) > 0 and len([e for e in new_errors if not e.startswith('    ')]) or 0}"
+                f"  - With NEW errors: {(len(new_errors) > 0 and len([e for e in new_errors if not e.startswith('    ')])) or 0}"
             )
 
         if new_errors:
@@ -767,7 +765,7 @@ class BaseSchemaValidator:
                 )
                 schema = lxml.etree.XMLSchema(xsd_doc)
 
-            with open(xml_file, "r") as f:
+            with open(xml_file) as f:
                 xml_doc = lxml.etree.parse(f)
 
             xml_doc, _ = self._remove_template_tags_from_text_nodes(xml_doc)
@@ -813,7 +811,7 @@ class BaseSchemaValidator:
             if not original_xml_file.exists():
                 return set()
 
-            is_valid, errors = self._validate_single_file_xsd(
+            _is_valid, errors = self._validate_single_file_xsd(
                 original_xml_file, temp_path
             )
             return errors if errors else set()

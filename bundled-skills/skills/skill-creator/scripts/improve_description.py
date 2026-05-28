@@ -147,7 +147,7 @@ Here are some tips that we've found to work well in writing these descriptions:
 - The description competes with other skills for Claude's attention — make it distinctive and immediately recognizable.
 - If you're getting lots of failures after repeated attempts, change things up. Try different sentence structures or wordings.
 
-I'd encourage you to be creative and mix up the style in different iterations since you'll have multiple opportunities to try different approaches and we'll just grab the highest-scoring one at the end. 
+I'd encourage you to be creative and mix up the style in different iterations since you'll have multiple opportunities to try different approaches and we'll just grab the highest-scoring one at the end.
 
 Please respond with only the new description text in <new_description> tags, nothing else."""
 
@@ -263,16 +263,7 @@ def main():
     # Output as JSON with both the new description and updated history
     output = {
         "description": new_description,
-        "history": history
-        + [
-            {
-                "description": current_description,
-                "passed": eval_results["summary"]["passed"],
-                "failed": eval_results["summary"]["failed"],
-                "total": eval_results["summary"]["total"],
-                "results": eval_results["results"],
-            }
-        ],
+        "history": [*history, {"description": current_description, "passed": eval_results["summary"]["passed"], "failed": eval_results["summary"]["failed"], "total": eval_results["summary"]["total"], "results": eval_results["results"]}],
     }
     print(json.dumps(output, indent=2))
 

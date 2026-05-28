@@ -5,12 +5,12 @@ from manim import (
     UP,
     Circle,
     Create,
+    CurvedArrow,
     FadeIn,
     FadeOut,
     Scene,
     Text,
     VGroup,
-    CurvedArrow,
 )
 
 

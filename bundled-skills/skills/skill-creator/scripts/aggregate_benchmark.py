@@ -38,7 +38,7 @@ import argparse
 import json
 import math
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -270,7 +270,7 @@ def generate_benchmark(
             )
 
     # Determine eval IDs from results
-    eval_ids = sorted(set(r["eval_id"] for config in results.values() for r in config))
+    eval_ids = sorted({r["eval_id"] for config in results.values() for r in config})
 
     benchmark = {
         "metadata": {
@@ -278,7 +278,7 @@ def generate_benchmark(
             "skill_path": skill_path or "<path/to/skill>",
             "executor_model": "<model-name>",
             "analyzer_model": "<model-name>",
-            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "timestamp": datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "evals_run": eval_ids,
             "runs_per_configuration": 3,
         },
@@ -398,7 +398,7 @@ def main():
     configs = [k for k in run_summary if k != "delta"]
     delta = run_summary.get("delta", {})
 
-    print(f"\nSummary:")
+    print("\nSummary:")
     for config in configs:
         pr = run_summary[config]["pass_rate"]["mean"]
         label = config.replace("_", " ").title()

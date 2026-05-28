@@ -14,10 +14,11 @@ After running, add markers to document.xml:
 """
 
 import argparse
+import contextlib
 import random
 import shutil
 import sys
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 import defusedxml.minidom
@@ -111,10 +112,8 @@ def _get_next_rid(rels_path: Path) -> int:
     for rel in dom.getElementsByTagName("Relationship"):
         rid = rel.getAttribute("Id")
         if rid and rid.startswith("rId"):
-            try:
+            with contextlib.suppress(ValueError):
                 max_rid = max(max_rid, int(rid[3:]))
-            except ValueError:
-                pass
     return max_rid + 1
 
 
@@ -228,7 +227,7 @@ def add_comment(
         return "", f"Error: {word} not found"
 
     para_id, durable_id = _generate_hex_id(), _generate_hex_id()
-    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    ts = datetime.now(UTC).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     comments = word / "comments.xml"
     first_comment = not comments.exists()

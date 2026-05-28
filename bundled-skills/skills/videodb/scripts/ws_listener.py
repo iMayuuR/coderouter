@@ -26,14 +26,14 @@ Examples:
   kill "$(cat ~/.local/state/videodb/videodb_ws_pid)"             # Stop the listener
 """
 
-import os
-import sys
-import json
-import signal
 import asyncio
-import logging
 import contextlib
-from datetime import datetime, timezone
+import json
+import logging
+import os
+import signal
+import sys
+from datetime import UTC, datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -70,10 +70,8 @@ def default_output_dir() -> Path:
 def ensure_private_dir(path: Path) -> Path:
     """Create the listener state directory with private permissions."""
     path.mkdir(parents=True, exist_ok=True, mode=0o700)
-    try:
+    with contextlib.suppress(OSError):
         path.chmod(0o700)
-    except OSError:
-        pass
     return path
 
 
@@ -115,7 +113,7 @@ def log(msg: str):
 
 def append_event(event: dict):
     """Append event to JSONL file with timestamps."""
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     event["ts"] = now.isoformat()
     event["unix_ts"] = now.timestamp()
     with EVENTS_FILE.open("a", encoding="utf-8") as f:
@@ -263,10 +261,8 @@ async def main_async():
     # Cancel remaining tasks
     for task in pending:
         task.cancel()
-        try:
+        with contextlib.suppress(asyncio.CancelledError):
             await task
-        except asyncio.CancelledError:
-            pass
 
     for sig in (signal.SIGINT, signal.SIGTERM):
         with contextlib.suppress(NotImplementedError):
