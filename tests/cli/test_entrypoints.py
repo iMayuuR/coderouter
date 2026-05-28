@@ -252,7 +252,9 @@ def test_launch_claude_auto_starts_proxy_and_terminates_it() -> None:
 
     with (
         patch("cli.entrypoints.get_settings", return_value=settings),
-        patch("cli.entrypoints._preflight_proxy", side_effect=["connection refused", None]),
+        patch(
+            "cli.entrypoints._preflight_proxy", side_effect=["connection refused", None]
+        ),
         patch("cli.entrypoints.shutil.which", return_value="resolved-claude.cmd"),
         patch("cli.entrypoints.subprocess.Popen") as popen,
         patch("cli.entrypoints.register_pid"),
@@ -263,11 +265,11 @@ def test_launch_claude_auto_starts_proxy_and_terminates_it() -> None:
         proxy_proc = MagicMock()
         proxy_proc.pid = 9999
         proxy_proc.poll.return_value = None
-        
+
         claude_proc = MagicMock()
         claude_proc.pid = 12345
         claude_proc.wait.return_value = 0
-        
+
         popen.side_effect = [proxy_proc, claude_proc]
 
         launch_claude([])
@@ -341,10 +343,15 @@ def test_launch_claude_unreachable_proxy_auto_start_fails_exits(
         proxy_proc.pid = 9999
         proxy_proc.poll.return_value = None
         popen.return_value = proxy_proc
-        
+
         launch_claude([])
 
     assert exc_info.value.code == 1
     captured = capsys.readouterr()
-    assert "Coderouter proxy not running. Starting it in the background..." in captured.err
-    assert "Failed to start Coderouter proxy automatically on http://127.0.0.1:9393" in captured.err
+    assert (
+        "Coderouter proxy not running. Starting it in the background..." in captured.err
+    )
+    assert (
+        "Failed to start Coderouter proxy automatically on http://127.0.0.1:9393"
+        in captured.err
+    )

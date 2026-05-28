@@ -208,9 +208,7 @@ def test_admin_first_apply_migrates_repo_env(monkeypatch, tmp_path):
     )
 
     assert response.status_code == 200
-    managed_text = (tmp_path / ".config" / "coderouter" / ".env").read_text(
-        "utf-8"
-    )
+    managed_text = (tmp_path / ".config" / "coderouter" / ".env").read_text("utf-8")
     assert "MODEL=deepseek/deepseek-chat" in managed_text
     assert "DEEPSEEK_API_KEY=deepseek-secret" in managed_text
 

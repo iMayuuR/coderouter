@@ -101,7 +101,9 @@ def init() -> None:
     template = _load_env_template()
     env_file.write_text(template, encoding="utf-8")
     print(f"Config created at {env_file}")
-    print("Edit it to set your API keys and model preferences, then run: coderouter-server")
+    print(
+        "Edit it to set your API keys and model preferences, then run: coderouter-server"
+    )
 
 
 def _claude_child_env(
@@ -167,7 +169,7 @@ def launch_claude(argv: Sequence[str] | None = None) -> None:
                 [sys.executable, "-c", "from cli.entrypoints import serve; serve()"],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-                **kwargs
+                **kwargs,
             )
             if proxy_process.pid:
                 register_pid(proxy_process.pid)
